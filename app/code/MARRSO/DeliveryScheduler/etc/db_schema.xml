@@ -49,7 +49,7 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
-        <constraint xsi:type="foreign" referenceId="FK_PICKUP_LOCATION" table="marrso_pickup_location" column="pickup_location_id" referenceTable="marrso_pickup_location" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="FK_PICKUP_LOCATION" table="marrso_pickup_slot" column="pickup_location_id" referenceTable="marrso_pickup_location" referenceColumn="entity_id" onDelete="CASCADE"/>
         <index referenceId="IDX_LOCATION_DATE">
             <column name="pickup_location_id"/>
             <column name="slot_date"/>
@@ -108,7 +108,7 @@
     <!-- ==================== ORDER DELIVERY SCHEDULE ==================== -->
     <table name="marrso_order_delivery_schedule" resource="default" engine="innodb" comment="Order Delivery Schedule Information">
         <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
-        <column xsi:type="int" name="order_id" unsigned="true" nullable="false" comment="Sales Order ID"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="true" comment="Sales Order ID"/>
         <column xsi:type="int" name="quote_id" unsigned="true" nullable="true" comment="Quote ID"/>
         <column xsi:type="varchar" name="delivery_type" nullable="false" length="20" comment="pickup|delivery"/>
         <column xsi:type="int" name="pickup_location_id" unsigned="true" nullable="true" comment="Pickup Location ID"/>
@@ -124,13 +124,30 @@
         <constraint xsi:type="unique" referenceId="UNQ_ORDER_ID">
             <column name="order_id"/>
         </constraint>
-        <constraint xsi:type="foreign" referenceId="FK_ORDER_ID" table="sales_order" column="order_id" referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="FK_ORDER_ID" table="marrso_order_delivery_schedule" column="order_id" referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
         <index referenceId="IDX_QUOTE_ID">
             <column name="quote_id"/>
         </index>
         <index referenceId="IDX_DELIVERY_TYPE">
             <column name="delivery_type"/>
         </index>
+    </table>
+
+    <!-- Quote / order address persistence for checkout extension attributes -->
+    <table name="quote_address" resource="checkout">
+        <column xsi:type="varchar" name="marrso_delivery_type" nullable="true" length="20" comment="MARRSO Delivery Type"/>
+        <column xsi:type="int" name="marrso_pickup_location_id" unsigned="true" nullable="true" comment="MARRSO Pickup Location ID"/>
+        <column xsi:type="varchar" name="marrso_delivery_date" nullable="true" length="32" comment="MARRSO Delivery Date"/>
+        <column xsi:type="varchar" name="marrso_delivery_slot" nullable="true" length="50" comment="MARRSO Delivery Slot"/>
+        <column xsi:type="text" name="marrso_delivery_instructions" nullable="true" comment="MARRSO Delivery Instructions"/>
+    </table>
+
+    <table name="sales_order_address" resource="sales">
+        <column xsi:type="varchar" name="marrso_delivery_type" nullable="true" length="20" comment="MARRSO Delivery Type"/>
+        <column xsi:type="int" name="marrso_pickup_location_id" unsigned="true" nullable="true" comment="MARRSO Pickup Location ID"/>
+        <column xsi:type="varchar" name="marrso_delivery_date" nullable="true" length="32" comment="MARRSO Delivery Date"/>
+        <column xsi:type="varchar" name="marrso_delivery_slot" nullable="true" length="50" comment="MARRSO Delivery Slot"/>
+        <column xsi:type="text" name="marrso_delivery_instructions" nullable="true" comment="MARRSO Delivery Instructions"/>
     </table>
 
 </schema>

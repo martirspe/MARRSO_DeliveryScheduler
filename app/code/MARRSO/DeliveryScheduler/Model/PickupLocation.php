@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use MARRSO\DeliveryScheduler\Api\Data\PickupLocationExtensionInterface as ExtensionAttributesInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DataObject\IdentityInterface;
 use MARRSO\DeliveryScheduler\Api\Data\PickupLocationInterface;
@@ -20,7 +20,7 @@ class PickupLocation extends AbstractModel implements PickupLocationInterface, I
     protected $_eventObject = 'pickup_location';
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @var \MARRSO\DeliveryScheduler\Api\Data\PickupLocationExtensionInterface|null
      */
     protected $extensionAttributes;
 

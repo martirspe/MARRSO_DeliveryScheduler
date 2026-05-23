@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use MARRSO\DeliveryScheduler\Api\Data\HolidayExtensionInterface as ExtensionAttributesInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DataObject\IdentityInterface;
 use MARRSO\DeliveryScheduler\Api\Data\HolidayInterface;
@@ -20,7 +20,7 @@ class Holiday extends AbstractModel implements HolidayInterface, IdentityInterfa
     protected $_eventObject = 'holiday';
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @var \MARRSO\DeliveryScheduler\Api\Data\HolidayExtensionInterface|null
      */
     protected $extensionAttributes;
 

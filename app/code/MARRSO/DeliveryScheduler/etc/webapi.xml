@@ -2,7 +2,6 @@
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
 
-    <!-- ==================== PICKUP LOCATIONS API ==================== -->
     <route url="/V1/delivery/pickup-locations" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\GetPickupLocationsInterface" method="execute"/>
         <resources>
@@ -10,7 +9,13 @@
         </resources>
     </route>
 
-    <!-- ==================== DELIVERY SLOTS API ==================== -->
+    <route url="/V1/delivery/pickup-slots" method="GET">
+        <service class="MARRSO\DeliveryScheduler\Api\GetPickupLocationsInterface" method="execute"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
     <route url="/V1/delivery/delivery-slots" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\GetDeliverySlotsInterface" method="execute"/>
         <resources>
@@ -18,182 +23,157 @@
         </resources>
     </route>
 
-    <!-- ==================== SAVE DELIVERY SELECTION API ==================== -->
+    <route url="/V1/delivery/home-slots" method="GET">
+        <service class="MARRSO\DeliveryScheduler\Api\GetDeliverySlotsInterface" method="execute"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
     <route url="/V1/delivery/save" method="POST">
         <service class="MARRSO\DeliveryScheduler\Api\SaveDeliverySelectionInterface" method="execute"/>
         <resources>
-            <resource ref="self"/>
+            <resource ref="anonymous"/>
         </resources>
-        <data>
-            <parameter name="deliverySelection" force="true">object</parameter>
-        </data>
     </route>
 
-    <!-- ==================== PICKUP LOCATION REPOSITORY API ==================== -->
     <route url="/V1/pickup-locations" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface" method="getList"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_locations_view"/>
         </resources>
     </route>
 
     <route url="/V1/pickup-locations/:id" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface" method="getById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_locations_view"/>
         </resources>
     </route>
 
     <route url="/V1/pickup-locations" method="POST">
         <service class="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_locations_create"/>
         </resources>
-        <data>
-            <parameter name="pickupLocation" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/pickup-locations/:id" method="PUT">
         <service class="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_locations_update"/>
         </resources>
-        <data>
-            <parameter name="pickupLocation" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/pickup-locations/:id" method="DELETE">
         <service class="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface" method="deleteById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_locations_delete"/>
         </resources>
     </route>
 
-    <!-- ==================== DELIVERY SLOT REPOSITORY API ==================== -->
     <route url="/V1/delivery-slots" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface" method="getList"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::delivery_slots_view"/>
         </resources>
     </route>
 
     <route url="/V1/delivery-slots/:id" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface" method="getById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::delivery_slots_view"/>
         </resources>
     </route>
 
     <route url="/V1/delivery-slots" method="POST">
         <service class="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::delivery_slots_create"/>
         </resources>
-        <data>
-            <parameter name="deliverySlot" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/delivery-slots/:id" method="PUT">
         <service class="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::delivery_slots_update"/>
         </resources>
-        <data>
-            <parameter name="deliverySlot" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/delivery-slots/:id" method="DELETE">
         <service class="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface" method="deleteById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::delivery_slots_delete"/>
         </resources>
     </route>
 
-    <!-- ==================== PICKUP SLOT REPOSITORY API ==================== -->
     <route url="/V1/pickup-slots" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface" method="getList"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_slots_view"/>
         </resources>
     </route>
 
     <route url="/V1/pickup-slots/:id" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface" method="getById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_slots_view"/>
         </resources>
     </route>
 
     <route url="/V1/pickup-slots" method="POST">
         <service class="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_slots_create"/>
         </resources>
-        <data>
-            <parameter name="pickupSlot" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/pickup-slots/:id" method="PUT">
         <service class="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_slots_update"/>
         </resources>
-        <data>
-            <parameter name="pickupSlot" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/pickup-slots/:id" method="DELETE">
         <service class="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface" method="deleteById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::pickup_slots_delete"/>
         </resources>
     </route>
 
-    <!-- ==================== HOLIDAY REPOSITORY API ==================== -->
     <route url="/V1/delivery-holidays" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface" method="getList"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::holidays_view"/>
         </resources>
     </route>
 
     <route url="/V1/delivery-holidays/:id" method="GET">
         <service class="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface" method="getById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::holidays_view"/>
         </resources>
     </route>
 
     <route url="/V1/delivery-holidays" method="POST">
         <service class="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::holidays_create"/>
         </resources>
-        <data>
-            <parameter name="holiday" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/delivery-holidays/:id" method="PUT">
         <service class="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface" method="save"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::holidays_update"/>
         </resources>
-        <data>
-            <parameter name="holiday" force="true">object</parameter>
-        </data>
     </route>
 
     <route url="/V1/delivery-holidays/:id" method="DELETE">
         <service class="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface" method="deleteById"/>
         <resources>
-            <resource ref="Magento_Backend::admin"/>
+            <resource ref="MARRSO_DeliveryScheduler::holidays_delete"/>
         </resources>
     </route>
 

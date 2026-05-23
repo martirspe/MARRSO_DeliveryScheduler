@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use MARRSO\DeliveryScheduler\Api\Data\DeliverySlotExtensionInterface as ExtensionAttributesInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DataObject\IdentityInterface;
 use MARRSO\DeliveryScheduler\Api\Data\DeliverySlotInterface;
@@ -20,7 +20,7 @@ class DeliverySlot extends AbstractModel implements DeliverySlotInterface, Ident
     protected $_eventObject = 'delivery_slot';
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @var \MARRSO\DeliveryScheduler\Api\Data\DeliverySlotExtensionInterface|null
      */
     protected $extensionAttributes;
 

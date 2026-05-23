@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd"
+      name="marrso_delivery_slot_form">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">marrso_delivery_slot_form.marrso_delivery_slot_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Delivery Slot</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <namespace>marrso_delivery_slot_form</namespace>
+        <deps>
+            <dep>marrso_delivery_slot_form.marrso_delivery_slot_form_data_source</dep>
+        </deps>
+        <buttons>
+            <button name="save" class="MARRSO\DeliveryScheduler\Block\Adminhtml\Component\Button\SaveButton"/>
+            <button name="back" class="MARRSO\DeliveryScheduler\Block\Adminhtml\Component\Button\BackButton"/>
+        </buttons>
+    </settings>
+    <dataSource name="marrso_delivery_slot_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="marrso_delivery_scheduler/deliveryslot/save"/>
+        </settings>
+        <dataProvider class="MARRSO\DeliveryScheduler\Model\DataProvider\DeliverySlotDataProvider" name="marrso_delivery_slot_form_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general">
+        <settings>
+            <label translate="true">Slot Information</label>
+            <dataScope/>
+        </settings>
+        <field name="entity_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+            </settings>
+        </field>
+        <field name="district" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">District</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="slot_date" formElement="date">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Date</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="start_time" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Start Time</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="end_time" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">End Time</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="price" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Price</label>
+            </settings>
+        </field>
+        <field name="capacity" formElement="input">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Capacity</label>
+            </settings>
+        </field>
+        <field name="used_capacity" formElement="input">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Used Capacity</label>
+            </settings>
+        </field>
+        <field name="carrier_code" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Carrier Code</label>
+            </settings>
+        </field>
+        <field name="is_active" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Active</label>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

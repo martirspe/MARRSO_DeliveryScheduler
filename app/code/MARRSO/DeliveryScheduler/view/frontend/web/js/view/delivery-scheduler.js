@@ -141,24 +141,34 @@ define([
             }
 
             var url = urlBuilder.build('rest/V1/delivery/save');
+            var shippingAddress = quote.shippingAddress();
             var payload = {
                 deliverySelection: {
                     quote_id: quoteId,
                     delivery_type: deliveryType,
-                    delivery_date: deliverySlot ? deliverySlot.date : (this.selectedPickupLocation() ? this.selectedPickupLocation().slots[0].date : ''),
+                    delivery_date: deliverySlot ? deliverySlot.date : (this.selectedPickupLocation() && this.selectedPickupLocation().slots.length ? this.selectedPickupLocation().slots[0].date : ''),
                     pickup_location_id: pickupLocationId,
                     delivery_slot: deliverySlot ? (deliverySlot.start_time + '-' + deliverySlot.end_time) : null,
-                    customer_comment: this.deliveryInstructions()
+                    customer_comment: this.deliveryInstructions(),
+                    district: this.customerDistrict() || (shippingAddress ? shippingAddress.city : '')
                 }
             };
 
-            storage.post(url, JSON.stringify(payload)).done(function () {
-                if (quote.shippingAddress()) {
-                    quote.shippingAddress()['custom_delivery_type'] = deliveryType;
-                    quote.shippingAddress()['custom_pickup_location_id'] = pickupLocationId;
-                    quote.shippingAddress()['custom_delivery_date'] = payload.deliverySelection.delivery_date;
-                    quote.shippingAddress()['custom_delivery_slot'] = payload.deliverySelection.delivery_slot;
-                    quote.shippingAddress()['custom_delivery_instructions'] = payload.deliverySelection.customer_comment;
+            storage.post(url, JSON.stringify(payload), true, 'application/json').done(function () {
+                if (shippingAddress) {
+                    if (typeof shippingAddress.extensionAttributes === 'undefined') {
+                        shippingAddress.extensionAttributes = {};
+                    }
+                    shippingAddress.extensionAttributes.delivery_type = deliveryType;
+                    shippingAddress.extensionAttributes.pickup_location_id = pickupLocationId;
+                    shippingAddress.extensionAttributes.delivery_date = payload.deliverySelection.delivery_date;
+                    shippingAddress.extensionAttributes.delivery_slot = payload.deliverySelection.delivery_slot;
+                    shippingAddress.extensionAttributes.delivery_instructions = payload.deliverySelection.customer_comment;
+                    shippingAddress.marrso_delivery_type = deliveryType;
+                    shippingAddress.marrso_pickup_location_id = pickupLocationId;
+                    shippingAddress.marrso_delivery_date = payload.deliverySelection.delivery_date;
+                    shippingAddress.marrso_delivery_slot = payload.deliverySelection.delivery_slot;
+                    shippingAddress.marrso_delivery_instructions = payload.deliverySelection.customer_comment;
                 }
                 self.errorMessage('');
             }).fail(function (error) {
@@ -295,7 +305,7 @@ define([
                 return;
             }
 
-            this.customerDistrict(address.region || '');
+            this.customerDistrict(address.city || address.region || '');
 
             var savedTab = this.getAddressValue(address, 'delivery_type') === 'delivery' ? 'delivery' : 'pickup';
             this.activeTab(savedTab);

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use MARRSO\DeliveryScheduler\Api\Data\PickupSlotExtensionInterface as ExtensionAttributesInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DataObject\IdentityInterface;
 use MARRSO\DeliveryScheduler\Api\Data\PickupSlotInterface;
@@ -20,7 +20,7 @@ class PickupSlot extends AbstractModel implements PickupSlotInterface, IdentityI
     protected $_eventObject = 'pickup_slot';
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @var \MARRSO\DeliveryScheduler\Api\Data\PickupSlotExtensionInterface|null
      */
     protected $extensionAttributes;
 

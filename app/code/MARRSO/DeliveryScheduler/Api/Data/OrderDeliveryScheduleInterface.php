@@ -44,17 +44,17 @@ interface OrderDeliveryScheduleInterface extends ExtensibleDataInterface
     /**
      * Get Order ID
      *
-     * @return int
+     * @return int|null
      */
-    public function getOrderId(): int;
+    public function getOrderId(): ?int;
 
     /**
      * Set Order ID
      *
-     * @param int $orderId
+     * @param int|null $orderId
      * @return $this
      */
-    public function setOrderId(int $orderId): self;
+    public function setOrderId(?int $orderId): self;
 
     /**
      * Get Quote ID
@@ -177,17 +177,17 @@ interface OrderDeliveryScheduleInterface extends ExtensibleDataInterface
     public function setUpdatedAt(?string $updatedAt): self;
 
     /**
-     * Get Extension Attributes
+     * Get extension attributes
      *
-     * @return \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @return \MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set Extension Attributes
+     * Set extension attributes
      *
-     * @param \Magento\Framework\Api\ExtensionAttributesInterface|null $extensionAttributes
+     * @param \MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleExtensionInterface|null $extensionAttributes
      * @return $this
      */
-    public function setExtensionAttributes(\Magento\Framework\Api\ExtensionAttributesInterface $extensionAttributes = null): self;
+    public function setExtensionAttributes(\MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleExtensionInterface $extensionAttributes = null): self;
 }

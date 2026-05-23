@@ -103,7 +103,10 @@ class QuoteSubmitObserver implements ObserverInterface
 
     private function getValue($shippingAddress, string $field, ?string $fallback = null): ?string
     {
-        $value = $shippingAddress->getData($field);
+        $value = $shippingAddress->getData('marrso_' . $field);
+        if ($value === null || $value === '') {
+            $value = $shippingAddress->getData($field);
+        }
         if ($value === null || $value === '') {
             $value = $shippingAddress->getData('custom_' . $field);
         }

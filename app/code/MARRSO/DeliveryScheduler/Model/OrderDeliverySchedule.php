@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model;
 
-use Magento\Framework\Api\ExtensionAttributesInterface;
+use MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleExtensionInterface as ExtensionAttributesInterface;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\DataObject\IdentityInterface;
 use MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleInterface;
@@ -20,7 +20,7 @@ class OrderDeliverySchedule extends AbstractModel implements OrderDeliverySchedu
     protected $_eventObject = 'order_delivery_schedule';
 
     /**
-     * @var \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @var \MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleExtensionInterface|null
      */
     protected $extensionAttributes;
 
@@ -55,12 +55,13 @@ class OrderDeliverySchedule extends AbstractModel implements OrderDeliverySchedu
         return $this;
     }
 
-    public function getOrderId(): int
+    public function getOrderId(): ?int
     {
-        return (int)$this->getData(self::ORDER_ID);
+        $value = $this->getData(self::ORDER_ID);
+        return $value !== null && $value !== '' ? (int)$value : null;
     }
 
-    public function setOrderId(int $orderId): self
+    public function setOrderId(?int $orderId): self
     {
         return $this->setData(self::ORDER_ID, $orderId);
     }

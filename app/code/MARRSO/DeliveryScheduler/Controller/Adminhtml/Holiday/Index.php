@@ -28,6 +28,7 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('MARRSO_DeliveryScheduler::holidays');
         $resultPage->getConfig()->getTitle()->prepend(__('Holidays'));
 
         return $resultPage;

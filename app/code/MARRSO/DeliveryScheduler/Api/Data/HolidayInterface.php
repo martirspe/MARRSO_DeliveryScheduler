@@ -94,17 +94,17 @@ interface HolidayInterface extends ExtensibleDataInterface
     public function setUpdatedAt(?string $updatedAt): self;
 
     /**
-     * Get Extension Attributes
+     * Get extension attributes
      *
-     * @return \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @return \MARRSO\DeliveryScheduler\Api\Data\HolidayExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set Extension Attributes
+     * Set extension attributes
      *
-     * @param \Magento\Framework\Api\ExtensionAttributesInterface|null $extensionAttributes
+     * @param \MARRSO\DeliveryScheduler\Api\Data\HolidayExtensionInterface|null $extensionAttributes
      * @return $this
      */
-    public function setExtensionAttributes(\Magento\Framework\Api\ExtensionAttributesInterface $extensionAttributes = null): self;
+    public function setExtensionAttributes(\MARRSO\DeliveryScheduler\Api\Data\HolidayExtensionInterface $extensionAttributes = null): self;
 }

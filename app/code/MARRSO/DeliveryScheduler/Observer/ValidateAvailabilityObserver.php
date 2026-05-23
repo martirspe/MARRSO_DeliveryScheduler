@@ -5,11 +5,11 @@ namespace MARRSO\DeliveryScheduler\Observer;
 
 use DateTime;
 use DateTimeZone;
-use Magento\Checkout\Model\Session as CheckoutSession;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Quote\Model\Quote;
 use Psr\Log\LoggerInterface;
 use MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface;
 use MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface;
@@ -18,94 +18,43 @@ use MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface;
 use MARRSO\DeliveryScheduler\Model\Config\ConfigProvider;
 
 /**
- * Validate Availability Observer
- *
- * Validates that the selected delivery/pickup option is still available
+ * Validates delivery selection before quote is submitted as an order.
  */
 class ValidateAvailabilityObserver implements ObserverInterface
 {
-    /**
-     * @var ConfigProvider
-     */
-    private $configProvider;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var CheckoutSession
-     */
-    private $checkoutSession;
-
-    /**
-     * @var PickupLocationRepositoryInterface
-     */
-    private $pickupLocationRepository;
-
-    /**
-     * @var PickupSlotRepositoryInterface
-     */
-    private $pickupSlotRepository;
-
-    /**
-     * @var DeliverySlotRepositoryInterface
-     */
-    private $deliverySlotRepository;
-
-    /**
-     * @var HolidayRepositoryInterface
-     */
-    private $holidayRepository;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    private $searchCriteriaBuilder;
-
     public function __construct(
-        ConfigProvider $configProvider,
-        LoggerInterface $logger,
-        CheckoutSession $checkoutSession,
-        PickupLocationRepositoryInterface $pickupLocationRepository,
-        PickupSlotRepositoryInterface $pickupSlotRepository,
-        DeliverySlotRepositoryInterface $deliverySlotRepository,
-        HolidayRepositoryInterface $holidayRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        private readonly ConfigProvider $configProvider,
+        private readonly LoggerInterface $logger,
+        private readonly PickupLocationRepositoryInterface $pickupLocationRepository,
+        private readonly PickupSlotRepositoryInterface $pickupSlotRepository,
+        private readonly DeliverySlotRepositoryInterface $deliverySlotRepository,
+        private readonly HolidayRepositoryInterface $holidayRepository,
+        private readonly SearchCriteriaBuilder $searchCriteriaBuilder
     ) {
-        $this->configProvider = $configProvider;
-        $this->logger = $logger;
-        $this->checkoutSession = $checkoutSession;
-        $this->pickupLocationRepository = $pickupLocationRepository;
-        $this->pickupSlotRepository = $pickupSlotRepository;
-        $this->deliverySlotRepository = $deliverySlotRepository;
-        $this->holidayRepository = $holidayRepository;
-        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     public function execute(Observer $observer): void
     {
+        if (!$this->configProvider->isEnabled()) {
+            return;
+        }
+
+        $quote = $observer->getEvent()->getQuote();
+        if (!$quote instanceof Quote) {
+            return;
+        }
+
+        $shippingAddress = $quote->getShippingAddress();
+        if (!$shippingAddress) {
+            return;
+        }
+
+        $deliveryType = $this->getValue($shippingAddress, 'delivery_type');
+        if (!$deliveryType) {
+            return;
+        }
+
         try {
-            if (!$this->configProvider->isEnabled()) {
-                return;
-            }
-
-            $quote = $this->checkoutSession->getQuote();
-            if (!$quote) {
-                return;
-            }
-
-            $shippingAddress = $quote->getShippingAddress();
-            if (!$shippingAddress) {
-                return;
-            }
-
-            $deliveryType = $this->getValue($shippingAddress, 'delivery_type');
-            if (!$deliveryType) {
-                return;
-            }
-
             if ($deliveryType === 'pickup') {
                 $this->validatePickupSelection($shippingAddress);
                 return;
@@ -125,7 +74,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
     {
         $pickupLocationId = (int)$this->getValue($shippingAddress, 'pickup_location_id');
         if (!$pickupLocationId) {
-            return;
+            throw new LocalizedException(__('Please select a pickup location.'));
         }
 
         $pickupLocation = $this->pickupLocationRepository->getById($pickupLocationId);
@@ -135,17 +84,16 @@ class ValidateAvailabilityObserver implements ObserverInterface
 
         $deliveryDate = $this->getValue($shippingAddress, 'delivery_date');
         if (!$deliveryDate) {
-            return;
+            throw new LocalizedException(__('Please select a pickup date.'));
         }
 
-        $searchCriteria = $this->searchCriteriaBuilder
+        $searchCriteria = $this->createSearchCriteriaBuilder()
             ->addFilter('pickup_location_id', $pickupLocationId)
             ->addFilter('slot_date', $deliveryDate)
             ->addFilter('is_active', true)
             ->create();
 
-        $slots = $this->pickupSlotRepository->getList($searchCriteria)->getItems();
-        foreach ($slots as $slot) {
+        foreach ($this->pickupSlotRepository->getList($searchCriteria)->getItems() as $slot) {
             if ($slot->getUsedCapacity() < $slot->getCapacity()) {
                 return;
             }
@@ -160,7 +108,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
         $slotRange = $this->getValue($shippingAddress, 'delivery_slot');
 
         if (!$deliveryDate || !$slotRange) {
-            return;
+            throw new LocalizedException(__('Please select a delivery date and time slot.'));
         }
 
         [$startTime, $endTime] = array_pad(explode('-', $slotRange), 2, null);
@@ -168,15 +116,13 @@ class ValidateAvailabilityObserver implements ObserverInterface
             throw new LocalizedException(__('Please select a valid delivery slot.'));
         }
 
-        $searchCriteria = $this->searchCriteriaBuilder
+        $searchCriteria = $this->createSearchCriteriaBuilder()
             ->addFilter('slot_date', $deliveryDate)
             ->addFilter('is_active', true)
             ->create();
 
-        $slots = $this->deliverySlotRepository->getList($searchCriteria)->getItems();
         $selectedSlot = null;
-
-        foreach ($slots as $slot) {
+        foreach ($this->deliverySlotRepository->getList($searchCriteria)->getItems() as $slot) {
             if ($slot->getStartTime() === $startTime && $slot->getEndTime() === $endTime) {
                 $selectedSlot = $slot;
                 break;
@@ -203,7 +149,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
                 throw new LocalizedException(__('Same-day delivery is not enabled.'));
             }
 
-            if ((int)date('H') >= $this->configProvider->getSameDayDeliveryCutoffHour()) {
+            if ((int)(new DateTime('now', $timezone))->format('H') >= $this->configProvider->getSameDayDeliveryCutoffHour()) {
                 throw new LocalizedException(__('Same-day delivery is no longer available.'));
             }
         }
@@ -211,7 +157,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
 
     private function isHoliday(string $deliveryDate): bool
     {
-        $searchCriteria = $this->searchCriteriaBuilder
+        $searchCriteria = $this->createSearchCriteriaBuilder()
             ->addFilter('holiday_date', $deliveryDate)
             ->create();
 
@@ -220,9 +166,9 @@ class ValidateAvailabilityObserver implements ObserverInterface
 
     private function getValue($shippingAddress, string $field): ?string
     {
-        $value = $shippingAddress->getData($field);
+        $value = $shippingAddress->getData('marrso_' . $field);
         if ($value === null || $value === '') {
-            $value = $shippingAddress->getData('custom_' . $field);
+            $value = $shippingAddress->getData($field);
         }
 
         if ($value === null || $value === '') {
@@ -235,10 +181,11 @@ class ValidateAvailabilityObserver implements ObserverInterface
             }
         }
 
-        if ($value === null || $value === '') {
-            return null;
-        }
+        return $value === null || $value === '' ? null : (string)$value;
+    }
 
-        return (string)$value;
+    private function createSearchCriteriaBuilder(): SearchCriteriaBuilder
+    {
+        return clone $this->searchCriteriaBuilder;
     }
 }

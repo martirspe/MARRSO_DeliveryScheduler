@@ -1,9 +1,36 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <type name="Magento\Framework\View\Element\UiComponent\Config\UiComponentFileResolver">
+
+    <virtualType name="MarrsoPickupLocationGridCollection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
-            <argument name="collectionFactory" xsi:type="object">Magento\Framework\View\Element\UiComponent\Config\CollectionFactory</argument>
+            <argument name="mainTable" xsi:type="string">marrso_pickup_location</argument>
+            <argument name="resourceModel" xsi:type="string">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupLocation</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MarrsoDeliverySlotGridCollection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">marrso_delivery_slot</argument>
+            <argument name="resourceModel" xsi:type="string">MARRSO\DeliveryScheduler\Model\ResourceModel\DeliverySlot</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MarrsoHolidayGridCollection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">marrso_delivery_holiday</argument>
+            <argument name="resourceModel" xsi:type="string">MARRSO\DeliveryScheduler\Model\ResourceModel\Holiday</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="marrso_pickup_location_listing_data_source" xsi:type="string">MarrsoPickupLocationGridCollection</item>
+                <item name="marrso_delivery_slot_listing_data_source" xsi:type="string">MarrsoDeliverySlotGridCollection</item>
+                <item name="marrso_holiday_listing_data_source" xsi:type="string">MarrsoHolidayGridCollection</item>
+            </argument>
         </arguments>
     </type>
+
 </config>

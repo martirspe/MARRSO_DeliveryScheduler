@@ -1,0 +1,9 @@
+{
+    "marrso_pickup_location": true,
+    "marrso_pickup_slot": true,
+    "marrso_delivery_slot": true,
+    "marrso_delivery_holiday": true,
+    "marrso_order_delivery_schedule": true,
+    "quote_address": true,
+    "sales_order_address": true
+}

@@ -190,17 +190,17 @@ interface PickupLocationInterface extends ExtensibleDataInterface
     public function setUpdatedAt(?string $updatedAt): self;
 
     /**
-     * Get Extension Attributes
+     * Get extension attributes
      *
-     * @return \Magento\Framework\Api\ExtensionAttributesInterface|null
+     * @return \MARRSO\DeliveryScheduler\Api\Data\PickupLocationExtensionInterface|null
      */
     public function getExtensionAttributes();
 
     /**
-     * Set Extension Attributes
+     * Set extension attributes
      *
-     * @param \Magento\Framework\Api\ExtensionAttributesInterface|null $extensionAttributes
+     * @param \MARRSO\DeliveryScheduler\Api\Data\PickupLocationExtensionInterface|null $extensionAttributes
      * @return $this
      */
-    public function setExtensionAttributes(\Magento\Framework\Api\ExtensionAttributesInterface $extensionAttributes = null): self;
+    public function setExtensionAttributes(\MARRSO\DeliveryScheduler\Api\Data\PickupLocationExtensionInterface $extensionAttributes = null): self;
 }

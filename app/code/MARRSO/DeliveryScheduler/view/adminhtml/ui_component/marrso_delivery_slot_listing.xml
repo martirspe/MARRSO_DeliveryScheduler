@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd"
+         name="marrso_delivery_slot_listing">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">marrso_delivery_slot_listing.marrso_delivery_slot_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="*/*/edit"/>
+                <class>primary</class>
+                <label translate="true">Add New Delivery Slot</label>
+                <aclResource>MARRSO_DeliveryScheduler::delivery_slots_create</aclResource>
+            </button>
+        </buttons>
+        <spinner>marrso_delivery_slot_columns</spinner>
+        <deps>
+            <dep>marrso_delivery_slot_listing.marrso_delivery_slot_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="marrso_delivery_slot_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>MARRSO_DeliveryScheduler::delivery_slots_view</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="marrso_delivery_slot_listing_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <url path="marrso_delivery_scheduler/deliveryslot/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete selected delivery slots?</message>
+                    </confirm>
+                </settings>
+            </action>
+        </massaction>
+    </listingToolbar>
+    <columns name="marrso_delivery_slot_columns">
+        <column name="entity_id">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="slot_date">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Date</label>
+            </settings>
+        </column>
+        <column name="start_time">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Start</label>
+            </settings>
+        </column>
+        <column name="end_time">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">End</label>
+            </settings>
+        </column>
+        <column name="district">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">District</label>
+            </settings>
+        </column>
+        <column name="used_capacity">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Used</label>
+            </settings>
+        </column>
+        <column name="capacity">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Capacity</label>
+            </settings>
+        </column>
+        <column name="price">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Price</label>
+            </settings>
+        </column>
+        <column name="is_active" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Active</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\DeliverySlotActions">
+            <settings>
+                <indexField>entity_id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+                <resizeDefaultWidth>107</resizeDefaultWidth>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

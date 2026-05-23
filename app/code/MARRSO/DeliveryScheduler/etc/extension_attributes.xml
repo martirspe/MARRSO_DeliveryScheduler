@@ -3,26 +3,59 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
 
     <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
-        <attribute code="delivery_type" type="string" />
-        <attribute code="pickup_location_id" type="int" />
-        <attribute code="delivery_date" type="string" />
-        <attribute code="delivery_slot" type="string" />
-        <attribute code="delivery_instructions" type="string" />
-    </extension_attributes>
-
-    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
-        <attribute code="delivery_type" type="string"/>
-        <attribute code="pickup_location_id" type="int"/>
-        <attribute code="delivery_date" type="string"/>
-        <attribute code="delivery_slot" type="string"/>
-        <attribute code="delivery_instructions" type="string"/>
+        <attribute code="delivery_type" type="string">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_delivery_type</field>
+            </join>
+        </attribute>
+        <attribute code="pickup_location_id" type="int">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_pickup_location_id</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_date" type="string">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_delivery_date</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_slot" type="string">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_delivery_slot</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_instructions" type="string">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_delivery_instructions</field>
+            </join>
+        </attribute>
     </extension_attributes>
 
     <extension_attributes for="Magento\Sales\Api\Data\OrderAddressInterface">
-        <attribute code="delivery_type" type="string"/>
-        <attribute code="pickup_location_id" type="int"/>
-        <attribute code="delivery_date" type="string"/>
-        <attribute code="delivery_slot" type="string"/>
+        <attribute code="delivery_type" type="string">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_delivery_type</field>
+            </join>
+        </attribute>
+        <attribute code="pickup_location_id" type="int">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_pickup_location_id</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_date" type="string">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_delivery_date</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_slot" type="string">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_delivery_slot</field>
+            </join>
+        </attribute>
+        <attribute code="delivery_instructions" type="string">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_delivery_instructions</field>
+            </join>
+        </attribute>
     </extension_attributes>
 
 </config>

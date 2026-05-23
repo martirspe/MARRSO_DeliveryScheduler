@@ -119,7 +119,7 @@ class GenerateSlots
     {
         try {
             // Get all active pickup locations
-            $searchCriteria = $this->searchCriteriaBuilder->addFilter('is_active', 1)->create();
+            $searchCriteria = $this->createSearchCriteriaBuilder()->addFilter('is_active', 1)->create();
             $locations = $this->pickupLocationRepository->getList($searchCriteria)->getItems();
 
             if (!$locations) {
@@ -242,7 +242,7 @@ class GenerateSlots
     {
         $districts = [];
 
-        $pickupSearchCriteria = $this->searchCriteriaBuilder
+        $pickupSearchCriteria = $this->createSearchCriteriaBuilder()
             ->addFilter('is_active', 1)
             ->create();
         $pickupLocations = $this->pickupLocationRepository->getList($pickupSearchCriteria)->getItems();
@@ -254,7 +254,7 @@ class GenerateSlots
             }
         }
 
-        $deliverySearchCriteria = $this->searchCriteriaBuilder->create();
+        $deliverySearchCriteria = $this->createSearchCriteriaBuilder()->create();
         $deliverySlots = $this->deliverySlotRepository->getList($deliverySearchCriteria)->getItems();
 
         foreach ($deliverySlots as $slot) {
@@ -274,13 +274,13 @@ class GenerateSlots
     {
         try {
             if ($type === 'pickup') {
-                $searchCriteria = $this->searchCriteriaBuilder
+                $searchCriteria = $this->createSearchCriteriaBuilder()
                     ->addFilter('pickup_location_id', (int)$scopeValue)
                     ->addFilter('slot_date', $date)
                     ->create();
                 $collection = $this->pickupSlotRepository->getList($searchCriteria);
             } elseif ($type === 'delivery') {
-                $searchCriteria = $this->searchCriteriaBuilder
+                $searchCriteria = $this->createSearchCriteriaBuilder()
                     ->addFilter('district', $scopeValue)
                     ->addFilter('slot_date', $date)
                     ->create();
@@ -389,5 +389,10 @@ class GenerateSlots
         } catch (\Exception $e) {
             $this->logger->error('Error generating slots for day: ' . $e->getMessage());
         }
+    }
+
+    private function createSearchCriteriaBuilder(): SearchCriteriaBuilder
+    {
+        return clone $this->searchCriteriaBuilder;
     }
 }
