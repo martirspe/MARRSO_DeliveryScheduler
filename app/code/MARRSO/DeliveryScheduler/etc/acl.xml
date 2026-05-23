@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Authorization/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="MARRSO_DeliveryScheduler::config" title="Delivery Scheduler Settings"/>
+                    </resource>
+                </resource>
+                <resource id="MARRSO_DeliveryScheduler::menu" title="Delivery Scheduler">
+                    <resource id="MARRSO_DeliveryScheduler::pickup_locations" title="Pickup Locations">
+                        <resource id="MARRSO_DeliveryScheduler::pickup_locations_view" title="View"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_locations_create" title="Create"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_locations_update" title="Update"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_locations_delete" title="Delete"/>
+                    </resource>
+                    <resource id="MARRSO_DeliveryScheduler::delivery_slots" title="Delivery Slots">
+                        <resource id="MARRSO_DeliveryScheduler::delivery_slots_view" title="View"/>
+                        <resource id="MARRSO_DeliveryScheduler::delivery_slots_create" title="Create"/>
+                        <resource id="MARRSO_DeliveryScheduler::delivery_slots_update" title="Update"/>
+                        <resource id="MARRSO_DeliveryScheduler::delivery_slots_delete" title="Delete"/>
+                    </resource>
+                    <resource id="MARRSO_DeliveryScheduler::pickup_slots" title="Pickup Slots">
+                        <resource id="MARRSO_DeliveryScheduler::pickup_slots_view" title="View"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_slots_create" title="Create"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_slots_update" title="Update"/>
+                        <resource id="MARRSO_DeliveryScheduler::pickup_slots_delete" title="Delete"/>
+                    </resource>
+                    <resource id="MARRSO_DeliveryScheduler::holidays" title="Holidays">
+                        <resource id="MARRSO_DeliveryScheduler::holidays_view" title="View"/>
+                        <resource id="MARRSO_DeliveryScheduler::holidays_create" title="Create"/>
+                        <resource id="MARRSO_DeliveryScheduler::holidays_update" title="Update"/>
+                        <resource id="MARRSO_DeliveryScheduler::holidays_delete" title="Delete"/>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="marrso" translate="label" sortOrder="999">
+            <label>MARRSO</label>
+        </tab>
+        <section id="marrso_delivery_scheduler" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Delivery Scheduler</label>
+            <tab>marrso</tab>
+            <resource>MARRSO_DeliveryScheduler::config</resource>
+
+            <!-- ==================== GENERAL SETTINGS ==================== -->
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Delivery Scheduler</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="enable_pickup" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Pickup Points</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="enable_delivery" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Home Delivery</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="default_timezone" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Timezone</label>
+                    <validate>validate-timezone</validate>
+                </field>
+            </group>
+
+            <!-- ==================== PICKUP CONFIGURATION ==================== -->
+            <group id="pickup" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Pickup Points Configuration</label>
+
+                <field id="cutoff_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cutoff Hour (24-hour format)</label>
+                    <validate>validate-number validate-digits-range digits-range-0-23</validate>
+                    <comment>Hour after which orders cannot be placed for same-day pickup</comment>
+                </field>
+
+                <field id="preparation_days" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Preparation Days (SLA)</label>
+                    <validate>validate-number validate-digits</validate>
+                    <comment>Number of business days required for order preparation</comment>
+                </field>
+
+                <field id="default_capacity" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Slot Capacity</label>
+                    <validate>validate-number validate-digits validate-greater-than-zero</validate>
+                    <comment>Default number of orders per pickup slot</comment>
+                </field>
+
+                <field id="disable_weekends" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Disable Weekends</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <!-- ==================== DELIVERY CONFIGURATION ==================== -->
+            <group id="delivery" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Home Delivery Configuration</label>
+
+                <field id="cutoff_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cutoff Hour (24-hour format)</label>
+                    <validate>validate-number validate-digits-range digits-range-0-23</validate>
+                    <comment>Hour after which orders cannot be placed for next-day delivery</comment>
+                </field>
+
+                <field id="enable_same_day" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Same-Day Delivery</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="same_day_cutoff" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Same-Day Cutoff Hour</label>
+                    <validate>validate-number validate-digits-range digits-range-0-23</validate>
+                    <comment>Hour after which same-day delivery is no longer available</comment>
+                    <depends>
+                        <field id="*/*/enable_same_day">1</field>
+                    </depends>
+                </field>
+
+                <field id="default_delivery_price" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Delivery Price</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>Default cost for home delivery</comment>
+                </field>
+
+                <field id="default_capacity" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Slot Capacity</label>
+                    <validate>validate-number validate-digits validate-greater-than-zero</validate>
+                    <comment>Default number of orders per delivery slot</comment>
+                </field>
+
+                <field id="disable_weekends" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Disable Weekends</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+
+            <!-- ==================== SLOT GENERATION ==================== -->
+            <group id="slot_generation" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Slot Generation</label>
+
+                <field id="days_ahead" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Generate Slots X Days Ahead</label>
+                    <validate>validate-number validate-digits</validate>
+                    <comment>Number of days in advance to generate availability slots</comment>
+                </field>
+
+                <field id="slot_interval_minutes" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Slot Interval (Minutes)</label>
+                    <validate>validate-number validate-digits</validate>
+                    <comment>Duration of each delivery time slot</comment>
+                </field>
+
+                <field id="start_time" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Daily Start Time (HH:MM)</label>
+                    <validate>validate-time</validate>
+                    <comment>First slot start time each day</comment>
+                </field>
+
+                <field id="end_time" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Daily End Time (HH:MM)</label>
+                    <validate>validate-time</validate>
+                    <comment>Last slot end time each day</comment>
+                </field>
+            </group>
+
+            <!-- ==================== ADVANCED SETTINGS ==================== -->
+            <group id="advanced" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Advanced Settings</label>
+
+                <field id="enable_logging" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Debug Logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="cache_lifetime" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cache Lifetime (seconds)</label>
+                    <validate>validate-number validate-digits</validate>
+                    <comment>Cache lifetime for availability queries</comment>
+                </field>
+
+                <field id="max_distance_km" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Distance (km)</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <comment>Maximum distance to show pickup points (0 = unlimited)</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

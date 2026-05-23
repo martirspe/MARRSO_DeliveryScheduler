@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- ==================== LOGGERS ==================== -->
+    <virtualType name="MARRSO_DeliveryScheduler_Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">marrso_delivery_scheduler</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">MARRSO_DeliveryScheduler_Logger_Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MARRSO_DeliveryScheduler_Logger_Handler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+            <argument name="filePath" xsi:type="string">var/log/marrso_delivery_scheduler.log</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- ==================== MODELS & RESOURCE MODELS ==================== -->
+    <type name="MARRSO\DeliveryScheduler\Model\PickupLocation">
+        <arguments>
+            <argument name="resource" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupLocation</argument>
+            <argument name="resourceCollection" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupLocation\Collection</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\ResourceModel\PickupLocation">
+        <arguments>
+            <argument name="connectionName" xsi:type="string">default</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\DeliverySlot">
+        <arguments>
+            <argument name="resource" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\DeliverySlot</argument>
+            <argument name="resourceCollection" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\DeliverySlot\Collection</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\ResourceModel\DeliverySlot">
+        <arguments>
+            <argument name="connectionName" xsi:type="string">default</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\PickupSlot">
+        <arguments>
+            <argument name="resource" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupSlot</argument>
+            <argument name="resourceCollection" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupSlot\Collection</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\ResourceModel\PickupSlot">
+        <arguments>
+            <argument name="connectionName" xsi:type="string">default</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\Holiday">
+        <arguments>
+            <argument name="resource" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\Holiday</argument>
+            <argument name="resourceCollection" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\Holiday\Collection</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\ResourceModel\Holiday">
+        <arguments>
+            <argument name="connectionName" xsi:type="string">default</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\OrderDeliverySchedule">
+        <arguments>
+            <argument name="resource" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\OrderDeliverySchedule</argument>
+            <argument name="resourceCollection" xsi:type="object">MARRSO\DeliveryScheduler\Model\ResourceModel\OrderDeliverySchedule\Collection</argument>
+        </arguments>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\ResourceModel\OrderDeliverySchedule">
+        <arguments>
+            <argument name="connectionName" xsi:type="string">default</argument>
+        </arguments>
+    </type>
+
+    <!-- ==================== REPOSITORIES ==================== -->
+    <preference for="MARRSO\DeliveryScheduler\Api\Data\PickupLocationInterface"
+                type="MARRSO\DeliveryScheduler\Model\PickupLocation"/>
+    <preference for="MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface"
+                type="MARRSO\DeliveryScheduler\Model\Repository\PickupLocationRepository"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\Data\DeliverySlotInterface"
+                type="MARRSO\DeliveryScheduler\Model\DeliverySlot"/>
+    <preference for="MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface"
+                type="MARRSO\DeliveryScheduler\Model\Repository\DeliverySlotRepository"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\Data\PickupSlotInterface"
+                type="MARRSO\DeliveryScheduler\Model\PickupSlot"/>
+    <preference for="MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface"
+                type="MARRSO\DeliveryScheduler\Model\Repository\PickupSlotRepository"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\Data\HolidayInterface"
+                type="MARRSO\DeliveryScheduler\Model\Holiday"/>
+    <preference for="MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface"
+                type="MARRSO\DeliveryScheduler\Model\Repository\HolidayRepository"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleInterface"
+                type="MARRSO\DeliveryScheduler\Model\OrderDeliverySchedule"/>
+    <preference for="MARRSO\DeliveryScheduler\Api\OrderDeliveryScheduleRepositoryInterface"
+                type="MARRSO\DeliveryScheduler\Model\Repository\OrderDeliveryScheduleRepository"/>
+
+    <!-- ==================== SERVICE CONTRACTS ==================== -->
+    <preference for="MARRSO\DeliveryScheduler\Api\GetPickupLocationsInterface"
+                type="MARRSO\DeliveryScheduler\Model\Service\GetPickupLocations"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\GetDeliverySlotsInterface"
+                type="MARRSO\DeliveryScheduler\Model\Service\GetDeliverySlots"/>
+
+    <preference for="MARRSO\DeliveryScheduler\Api\SaveDeliverySelectionInterface"
+                type="MARRSO\DeliveryScheduler\Model\Service\SaveDeliverySelection"/>
+
+    <!-- ==================== AVAILABILITY ENGINE ==================== -->
+    <type name="MARRSO\DeliveryScheduler\Model\Service\AvailabilityEngine">
+        <arguments>
+            <argument name="pickupLocationRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface</argument>
+            <argument name="deliverySlotRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface</argument>
+            <argument name="pickupSlotRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface</argument>
+            <argument name="holidayRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface</argument>
+            <argument name="configProvider" xsi:type="object">MARRSO\DeliveryScheduler\Model\Config\ConfigProvider</argument>
+            <argument name="logger" xsi:type="object">MARRSO_DeliveryScheduler_Logger</argument>
+        </arguments>
+    </type>
+
+    <!-- ==================== DISTANCE CALCULATOR ==================== -->
+    <type name="MARRSO\DeliveryScheduler\Model\Service\DistanceCalculator">
+        <arguments>
+            <argument name="logger" xsi:type="object">MARRSO_DeliveryScheduler_Logger</argument>
+        </arguments>
+    </type>
+
+    <!-- ==================== CONFIG PROVIDER ==================== -->
+    <type name="MARRSO\DeliveryScheduler\Model\Config\ConfigProvider">
+        <arguments>
+            <argument name="scopeConfig" xsi:type="object">Magento\Framework\App\Config\ScopeConfigInterface</argument>
+            <argument name="storeManager" xsi:type="object">Magento\Store\Model\StoreManagerInterface</argument>
+        </arguments>
+    </type>
+
+    <!-- ==================== OBSERVERS ==================== -->
+    <!-- Quote submit observer is declared in etc/events.xml -->
+
+    <!-- ==================== CRON JOBS ==================== -->
+    <type name="MARRSO\DeliveryScheduler\Cron\GenerateSlots">
+        <arguments>
+            <argument name="pickupSlotRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface</argument>
+            <argument name="deliverySlotRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface</argument>
+            <argument name="holidayRepository" xsi:type="object">MARRSO\DeliveryScheduler\Api\HolidayRepositoryInterface</argument>
+            <argument name="configProvider" xsi:type="object">MARRSO\DeliveryScheduler\Model\Config\ConfigProvider</argument>
+            <argument name="logger" xsi:type="object">MARRSO_DeliveryScheduler_Logger</argument>
+        </arguments>
+    </type>
+
+</config>

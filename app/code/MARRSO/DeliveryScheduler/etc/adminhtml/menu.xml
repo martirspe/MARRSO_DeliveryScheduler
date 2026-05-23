@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<menu xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:Menu/etc/menu.xsd">
+    <add id="MARRSO_DeliveryScheduler::menu"
+         title="Delivery Scheduler"
+         module="MARRSO_DeliveryScheduler"
+         sortOrder="100"
+         parent="Magento_Backend::content"
+         resource="MARRSO_DeliveryScheduler::menu"/>
+
+    <add id="MARRSO_DeliveryScheduler::pickup_locations"
+         title="Pickup Locations"
+         module="MARRSO_DeliveryScheduler"
+         sortOrder="10"
+         parent="MARRSO_DeliveryScheduler::menu"
+         action="marrso_delivery_scheduler/pickup_location/index"
+         resource="MARRSO_DeliveryScheduler::pickup_locations"/>
+
+    <add id="MARRSO_DeliveryScheduler::delivery_slots"
+         title="Delivery Slots"
+         module="MARRSO_DeliveryScheduler"
+         sortOrder="20"
+         parent="MARRSO_DeliveryScheduler::menu"
+         action="marrso_delivery_scheduler/delivery_slot/index"
+         resource="MARRSO_DeliveryScheduler::delivery_slots"/>
+
+    <add id="MARRSO_DeliveryScheduler::holidays"
+         title="Holidays"
+         module="MARRSO_DeliveryScheduler"
+         sortOrder="30"
+         parent="MARRSO_DeliveryScheduler::menu"
+         action="marrso_delivery_scheduler/holiday/index"
+         resource="MARRSO_DeliveryScheduler::holidays"/>
+</menu>

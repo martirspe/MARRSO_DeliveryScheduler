@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="marrso_delivery_scheduler_generate_slots" instance="MARRSO\DeliveryScheduler\Cron\GenerateSlots" method="execute">
+            <schedule>0 0 * * *</schedule>
+        </job>
+        <job name="marrso_delivery_scheduler_cleanup_expired" instance="MARRSO\DeliveryScheduler\Cron\CleanupExpiredSlots" method="execute">
+            <schedule>0 1 * * *</schedule>
+        </job>
+    </group>
+</config>

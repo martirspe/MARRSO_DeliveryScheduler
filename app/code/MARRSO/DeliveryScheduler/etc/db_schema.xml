@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+
+    <!-- ==================== PICKUP LOCATIONS ==================== -->
+    <table name="marrso_pickup_location" resource="default" engine="innodb" comment="Pickup Point Locations">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Location Name"/>
+        <column xsi:type="varchar" name="code" nullable="false" length="100" comment="Location Code"/>
+        <column xsi:type="text" name="address" nullable="false" comment="Physical Address"/>
+        <column xsi:type="varchar" name="district" nullable="true" length="100" comment="District/Zone"/>
+        <column xsi:type="decimal" name="latitude" scale="8" precision="10" nullable="true" comment="Latitude"/>
+        <column xsi:type="decimal" name="longitude" scale="8" precision="11" nullable="true" comment="Longitude"/>
+        <column xsi:type="int" name="priority" unsigned="true" nullable="false" default="0" comment="Sort Priority"/>
+        <column xsi:type="boolean" name="is_active" nullable="false" default="true" comment="Is Active"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UNQ_CODE">
+            <column name="code"/>
+        </constraint>
+        <index referenceId="IDX_DISTRICT">
+            <column name="district"/>
+        </index>
+        <index referenceId="IDX_IS_ACTIVE">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="IDX_PRIORITY">
+            <column name="priority"/>
+        </index>
+    </table>
+
+    <!-- ==================== PICKUP SLOTS ==================== -->
+    <table name="marrso_pickup_slot" resource="default" engine="innodb" comment="Pickup Available Slots">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="pickup_location_id" unsigned="true" nullable="false" comment="Pickup Location ID"/>
+        <column xsi:type="date" name="slot_date" nullable="false" comment="Slot Date"/>
+        <column xsi:type="varchar" name="start_time" nullable="false" length="8" comment="Start Time"/>
+        <column xsi:type="varchar" name="end_time" nullable="false" length="8" comment="End Time"/>
+        <column xsi:type="int" name="capacity" unsigned="true" nullable="false" default="10" comment="Max Capacity"/>
+        <column xsi:type="int" name="used_capacity" unsigned="true" nullable="false" default="0" comment="Used Capacity"/>
+        <column xsi:type="boolean" name="is_active" nullable="false" default="true" comment="Is Active"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="FK_PICKUP_LOCATION" table="marrso_pickup_location" column="pickup_location_id" referenceTable="marrso_pickup_location" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="IDX_LOCATION_DATE">
+            <column name="pickup_location_id"/>
+            <column name="slot_date"/>
+        </index>
+        <index referenceId="IDX_IS_ACTIVE">
+            <column name="is_active"/>
+        </index>
+    </table>
+
+    <!-- ==================== DELIVERY SLOTS ==================== -->
+    <table name="marrso_delivery_slot" resource="default" engine="innodb" comment="Home Delivery Available Slots">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="varchar" name="district" nullable="false" length="100" comment="Delivery District"/>
+        <column xsi:type="date" name="slot_date" nullable="false" comment="Delivery Date"/>
+        <column xsi:type="varchar" name="start_time" nullable="false" length="8" comment="Start Time"/>
+        <column xsi:type="varchar" name="end_time" nullable="false" length="8" comment="End Time"/>
+        <column xsi:type="decimal" name="price" scale="2" precision="10" nullable="false" default="0" comment="Delivery Price"/>
+        <column xsi:type="int" name="capacity" unsigned="true" nullable="false" default="20" comment="Max Capacity"/>
+        <column xsi:type="int" name="used_capacity" unsigned="true" nullable="false" default="0" comment="Used Capacity"/>
+        <column xsi:type="varchar" name="carrier_code" nullable="true" length="50" comment="Carrier Code"/>
+        <column xsi:type="boolean" name="is_active" nullable="false" default="true" comment="Is Active"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <index referenceId="IDX_DISTRICT_DATE">
+            <column name="district"/>
+            <column name="slot_date"/>
+        </index>
+        <index referenceId="IDX_IS_ACTIVE">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="IDX_CARRIER">
+            <column name="carrier_code"/>
+        </index>
+    </table>
+
+    <!-- ==================== HOLIDAYS ==================== -->
+    <table name="marrso_delivery_holiday" resource="default" engine="innodb" comment="Delivery Schedule Holidays">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="date" name="holiday_date" nullable="false" comment="Holiday Date"/>
+        <column xsi:type="varchar" name="description" nullable="true" length="255" comment="Holiday Description"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UNQ_HOLIDAY_DATE">
+            <column name="holiday_date"/>
+        </constraint>
+    </table>
+
+    <!-- ==================== ORDER DELIVERY SCHEDULE ==================== -->
+    <table name="marrso_order_delivery_schedule" resource="default" engine="innodb" comment="Order Delivery Schedule Information">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="false" comment="Sales Order ID"/>
+        <column xsi:type="int" name="quote_id" unsigned="true" nullable="true" comment="Quote ID"/>
+        <column xsi:type="varchar" name="delivery_type" nullable="false" length="20" comment="pickup|delivery"/>
+        <column xsi:type="int" name="pickup_location_id" unsigned="true" nullable="true" comment="Pickup Location ID"/>
+        <column xsi:type="date" name="delivery_date" nullable="false" comment="Selected Delivery/Pickup Date"/>
+        <column xsi:type="varchar" name="delivery_slot" nullable="true" length="50" comment="Time Slot HH:MM-HH:MM"/>
+        <column xsi:type="text" name="customer_comment" nullable="true" comment="Customer Delivery Instructions"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="UNQ_ORDER_ID">
+            <column name="order_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="FK_ORDER_ID" table="sales_order" column="order_id" referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="IDX_QUOTE_ID">
+            <column name="quote_id"/>
+        </index>
+        <index referenceId="IDX_DELIVERY_TYPE">
+            <column name="delivery_type"/>
+        </index>
+    </table>
+
+</schema>
