@@ -1,0 +1,650 @@
+//
+//  MARRSO Delivery Scheduler - Falabella-inspired checkout
+//
+
+@marrso-accent: #8dc63f;
+@marrso-accent-dark: #6fa82e;
+@marrso-border: #e5e5e5;
+@marrso-text-muted: #6b6b6b;
+@marrso-card-radius: 8px;
+
+.marrso-delivery-scheduler {
+    margin: 24px 0;
+    padding: 0;
+    font-size: 1.4rem;
+
+    &__header {
+        margin-bottom: 16px;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #222;
+    }
+
+    &__loader {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 0;
+        color: @marrso-text-muted;
+    }
+
+    &__loader-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: @marrso-accent;
+        animation: marrso-pulse 1s ease-in-out infinite;
+    }
+}
+
+@keyframes marrso-pulse {
+    0%, 100% { opacity: .3; transform: scale(.9); }
+    50% { opacity: 1; transform: scale(1); }
+}
+
+.marrso-method-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.marrso-method-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid @marrso-border;
+    border-radius: @marrso-card-radius;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .2s ease, box-shadow .2s ease;
+
+    &:hover {
+        border-color: darken(@marrso-border, 8%);
+    }
+
+    &.is-selected {
+        border-color: @marrso-accent;
+        box-shadow: 0 0 0 1px @marrso-accent;
+        background: #f9fdf4;
+    }
+
+    &.is-disabled {
+        opacity: .55;
+        cursor: not-allowed;
+    }
+
+    &__icon {
+        flex-shrink: 0;
+        font-size: 2rem;
+        line-height: 1;
+        margin-top: 2px;
+    }
+
+    &__body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    &__label {
+        font-weight: 700;
+        color: #222;
+        line-height: 1.25;
+    }
+
+    &__hint {
+        font-size: 1.2rem;
+        color: @marrso-text-muted;
+        line-height: 1.35;
+    }
+
+    &__badge {
+        margin-top: 6px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #333;
+        line-height: 1.3;
+        white-space: normal;
+        word-break: break-word;
+
+        &--free {
+            color: @marrso-accent-dark;
+        }
+    }
+}
+
+.marrso-panel {
+    border: 1px solid @marrso-border;
+    border-radius: @marrso-card-radius;
+    padding: 16px;
+    margin-bottom: 16px;
+    background: #fafafa;
+
+    &__toolbar {
+        margin-bottom: 14px;
+
+        &--actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+
+    &__buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    &__hint {
+        margin: 0 0 12px;
+        font-size: 1.2rem;
+        color: @marrso-text-muted;
+    }
+}
+
+.marrso-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border: 1px solid @marrso-border;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: border-color .2s ease, background .2s ease;
+
+    &:hover {
+        border-color: darken(@marrso-border, 10%);
+    }
+
+    &.is-active {
+        border-color: @marrso-accent;
+        background: #f0fae4;
+        font-weight: 600;
+    }
+
+    &--secondary {
+        color: #333;
+    }
+}
+
+.marrso-pickup-map {
+    width: 100%;
+    height: 320px;
+    margin-bottom: 16px;
+    border: 1px solid @marrso-border;
+    border-radius: @marrso-card-radius;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.marrso-map-marker {
+    background: transparent;
+    border: none;
+
+    span {
+        display: block;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: @marrso-accent;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+    }
+
+    &.is-selected span {
+        width: 24px;
+        height: 24px;
+        background: #2d6a1f;
+        border-width: 4px;
+    }
+
+    &.is-customer span {
+        width: 14px;
+        height: 14px;
+        background: #1979c3;
+    }
+}
+
+.marrso-search {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid @marrso-border;
+    border-radius: 6px;
+    font-size: 1.4rem;
+    background: #fff;
+}
+
+.marrso-location-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+.marrso-location-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    border: 2px solid @marrso-border;
+    border-radius: @marrso-card-radius;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .2s ease, background .2s ease;
+
+    &:hover {
+        border-color: darken(@marrso-border, 10%);
+    }
+
+    &.is-selected {
+        border-color: @marrso-accent;
+        background: #f9fdf4;
+    }
+
+    &__main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    &__brand {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #eee;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #444;
+    }
+
+    &__badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #e8f5d6;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: @marrso-accent-dark;
+    }
+
+    &__name {
+        margin: 0 0 4px;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    &__address,
+    &__references {
+        margin: 0 0 4px;
+        color: @marrso-text-muted;
+        font-size: 1.3rem;
+        line-height: 1.4;
+    }
+
+    &__meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 1.2rem;
+        color: #888;
+    }
+
+    &__price {
+        font-weight: 700;
+        white-space: nowrap;
+
+        &--free {
+            color: @marrso-accent-dark;
+        }
+    }
+}
+
+.marrso-slot-picker {
+    margin-top: 8px;
+    padding-top: 16px;
+    border-top: 1px solid @marrso-border;
+
+    &__label {
+        margin: 0 0 10px;
+        font-weight: 600;
+        color: #333;
+    }
+}
+
+.marrso-date-row,
+.marrso-time-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.marrso-date-chip,
+.marrso-time-chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 14px;
+    border: 2px solid @marrso-border;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 1.3rem;
+    transition: border-color .2s ease, background .2s ease;
+
+    &:hover {
+        border-color: darken(@marrso-border, 10%);
+    }
+
+    &.is-selected {
+        border-color: @marrso-accent;
+        background: #f0fae4;
+        font-weight: 600;
+    }
+}
+
+.marrso-time-chip {
+    &__time {
+        font-weight: 600;
+    }
+
+    &__price {
+        font-size: 1.1rem;
+        color: @marrso-accent-dark;
+        font-weight: 700;
+    }
+
+    &__spots {
+        font-size: 1.1rem;
+        color: @marrso-text-muted;
+    }
+}
+
+.marrso-instructions {
+    margin: 16px 0;
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    &__input {
+        width: 100%;
+        border-radius: 6px;
+    }
+}
+
+.marrso-summary {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: @marrso-card-radius;
+    background: linear-gradient(135deg, #f0fae4 0%, #fff 100%);
+    border: 1px solid lighten(@marrso-accent, 10%);
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+
+    &__icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: @marrso-accent;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    &__title {
+        margin: 0 0 4px;
+        font-weight: 700;
+        color: #222;
+    }
+
+    &__method {
+        margin: 0 0 4px;
+        font-size: 1.2rem;
+        color: @marrso-accent-dark;
+        font-weight: 600;
+    }
+
+    &__text {
+        margin: 0;
+        color: #333;
+    }
+
+    &__detail {
+        margin: 4px 0 0;
+        font-size: 1.2rem;
+        color: @marrso-text-muted;
+    }
+}
+
+.marrso-no-results {
+    text-align: center;
+    padding: 20px;
+    color: @marrso-text-muted;
+}
+
+@media (max-width: 640px) {
+    .marrso-method-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .marrso-pickup-map {
+        height: 260px;
+    }
+
+    .marrso-location-list {
+        max-height: none;
+    }
+
+    .marrso-date-row {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+    }
+
+    .marrso-date-chip {
+        flex-shrink: 0;
+    }
+}
+
+//
+// Express checkout page
+//
+
+.marrso-express-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+}
+
+.marrso-express {
+    &__header {
+        margin-bottom: 24px;
+    }
+
+    &__back {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: @marrso-text-muted;
+        text-decoration: none;
+        font-size: 1.3rem;
+
+        &:hover {
+            color: @marrso-accent-dark;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 2.4rem;
+        font-weight: 700;
+        color: #222;
+    }
+
+    &__layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    &__section {
+        margin-bottom: 24px;
+        padding: 20px;
+        border: 1px solid @marrso-border;
+        border-radius: @marrso-card-radius;
+        background: #fff;
+    }
+
+    &__section-title {
+        margin: 0 0 16px;
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    &__form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px 16px;
+    }
+
+    &__field-full {
+        grid-column: 1 / -1;
+    }
+
+    &__actions {
+        margin-top: 8px;
+    }
+
+    &__continue {
+        width: 100%;
+        padding: 14px 24px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: @marrso-accent;
+        border-color: @marrso-accent;
+
+        &:hover {
+            background: @marrso-accent-dark;
+            border-color: @marrso-accent-dark;
+        }
+    }
+
+    &__summary {
+        position: sticky;
+        top: 24px;
+        padding: 20px;
+        border: 1px solid @marrso-border;
+        border-radius: @marrso-card-radius;
+        background: #fafafa;
+    }
+
+    &__summary-title {
+        margin: 0 0 16px;
+        font-size: 1.6rem;
+        font-weight: 700;
+    }
+
+    &__items {
+        list-style: none;
+        margin: 0 0 16px;
+        padding: 0;
+    }
+
+    &__item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 0;
+        border-bottom: 1px solid @marrso-border;
+        font-size: 1.3rem;
+    }
+
+    &__item-name {
+        font-weight: 600;
+        color: #222;
+    }
+
+    &__item-meta {
+        color: @marrso-text-muted;
+    }
+
+    &__totals {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__total-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.3rem;
+        color: #333;
+
+        &--grand {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 2px solid @marrso-border;
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+    }
+}
+
+.marrso-express-cart-link {
+    margin-top: 12px;
+    text-align: center;
+
+    &__button {
+        display: inline-block;
+        width: 100%;
+        padding: 12px 16px;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 991px) {
+    .marrso-express__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .marrso-express__summary {
+        position: static;
+        order: -1;
+    }
+
+    .marrso-express__form-grid {
+        grid-template-columns: 1fr;
+    }
+}

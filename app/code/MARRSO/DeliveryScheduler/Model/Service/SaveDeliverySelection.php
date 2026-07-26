@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MARRSO\DeliveryScheduler\Model\Service;
 
+use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
@@ -13,18 +14,18 @@ use MARRSO\DeliveryScheduler\Api\OrderDeliveryScheduleRepositoryInterface;
 use MARRSO\DeliveryScheduler\Api\SaveDeliverySelectionInterface;
 use MARRSO\DeliveryScheduler\Model\Config\ConfigProvider;
 use MARRSO\DeliveryScheduler\Model\Quote\Address\DeliveryAttributesPersistor;
+use MARRSO\DeliveryScheduler\Model\Quote\ShippingPriceUpdater;
 
-/**
- * Save Delivery Selection Service Implementation
- */
 class SaveDeliverySelection implements SaveDeliverySelectionInterface
 {
     public function __construct(
         private readonly OrderDeliveryScheduleRepositoryInterface $orderDeliveryScheduleRepository,
         private readonly DeliveryAttributesPersistor $deliveryAttributesPersistor,
         private readonly CartRepositoryInterface $cartRepository,
-        private readonly AvailabilityEngine $availabilityEngine,
+        private readonly SelectionValidator $selectionValidator,
+        private readonly QuoteAccessValidator $quoteAccessValidator,
         private readonly ConfigProvider $configProvider,
+        private readonly ShippingPriceUpdater $shippingPriceUpdater,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -36,8 +37,12 @@ class SaveDeliverySelection implements SaveDeliverySelectionInterface
                 throw new LocalizedException(__('Delivery scheduler is disabled.'));
             }
 
-            if (!$deliverySelection->getOrderId() && !$deliverySelection->getQuoteId()) {
-                throw new LocalizedException(__('Either order_id or quote_id must be provided'));
+            if (!$deliverySelection->getQuoteId()) {
+                throw new LocalizedException(__('quote_id is required.'));
+            }
+
+            if ($deliverySelection->getOrderId()) {
+                throw new AuthorizationException(__('Order-linked delivery selections cannot be modified from checkout.'));
             }
 
             if (!$deliverySelection->getDeliveryType()) {
@@ -62,33 +67,36 @@ class SaveDeliverySelection implements SaveDeliverySelectionInterface
                 throw new LocalizedException(__('Pickup location is required for pickup orders'));
             }
 
-            $this->assertSelectionIsAvailable($deliverySelection, $this->resolveDistrict($deliverySelection));
+            $quoteId = (int)$deliverySelection->getQuoteId();
+            $this->quoteAccessValidator->getOwnedQuote($quoteId);
 
-            if ($deliverySelection->getQuoteId()) {
-                try {
-                    $existing = $this->orderDeliveryScheduleRepository->getByQuoteId($deliverySelection->getQuoteId());
-                    $existing->setDeliveryType($deliverySelection->getDeliveryType());
-                    $existing->setPickupLocationId($deliverySelection->getPickupLocationId());
-                    $existing->setDeliveryDate($deliverySelection->getDeliveryDate());
-                    $existing->setDeliverySlot($deliverySelection->getDeliverySlot());
-                    $existing->setCustomerComment($deliverySelection->getCustomerComment());
+            $district = $this->resolveDistrict($deliverySelection);
+            $resolved = $this->selectionValidator->validateAndResolve($deliverySelection, $district);
 
-                    if ($deliverySelection->getOrderId()) {
-                        $existing->setOrderId($deliverySelection->getOrderId());
-                    }
+            $deliverySelection->setData('delivery_price', $resolved['price']);
+            $deliverySelection->setData('carrier_code', $resolved['carrier_code']);
 
-                    $deliverySelection = $existing;
-                } catch (NoSuchEntityException $e) {
-                    // New quote-based selection.
-                }
-
-                $this->deliveryAttributesPersistor->save((int)$deliverySelection->getQuoteId(), $deliverySelection);
+            try {
+                $existing = $this->orderDeliveryScheduleRepository->getByQuoteId($quoteId);
+                $existing->setDeliveryType($deliverySelection->getDeliveryType());
+                $existing->setPickupLocationId($deliverySelection->getPickupLocationId());
+                $existing->setDeliveryDate($deliverySelection->getDeliveryDate());
+                $existing->setDeliverySlot($deliverySelection->getDeliverySlot());
+                $existing->setServiceLevel($deliverySelection->getServiceLevel());
+                $existing->setCustomerComment($deliverySelection->getCustomerComment());
+                $existing->setData('delivery_price', $resolved['price']);
+                $existing->setData('carrier_code', $resolved['carrier_code']);
+                $deliverySelection = $existing;
+            } catch (NoSuchEntityException $e) {
+                // New quote-based selection.
             }
 
+            $this->deliveryAttributesPersistor->save($quoteId, $deliverySelection);
+            $this->shippingPriceUpdater->applyFromSelection($quoteId, $deliverySelection);
             $this->orderDeliveryScheduleRepository->save($deliverySelection);
 
             return true;
-        } catch (CouldNotSaveException | LocalizedException $e) {
+        } catch (AuthorizationException | CouldNotSaveException | LocalizedException $e) {
             $this->logger->error('Could not save delivery selection: ' . $e->getMessage());
             throw $e;
         } catch (\Exception $e) {
@@ -97,20 +105,8 @@ class SaveDeliverySelection implements SaveDeliverySelectionInterface
         }
     }
 
-    /**
-     * @throws LocalizedException
-     */
     private function resolveDistrict(OrderDeliveryScheduleInterface $deliverySelection): ?string
     {
-        $district = trim((string)$deliverySelection->getData('district'));
-        if ($district !== '') {
-            return $district;
-        }
-
-        if (!$deliverySelection->getQuoteId()) {
-            return null;
-        }
-
         try {
             $quote = $this->cartRepository->get((int)$deliverySelection->getQuoteId());
             $shippingAddress = $quote->getShippingAddress();
@@ -123,56 +119,5 @@ class SaveDeliverySelection implements SaveDeliverySelectionInterface
         } catch (\Exception $e) {
             return null;
         }
-    }
-
-    /**
-     * @throws LocalizedException
-     */
-    private function assertSelectionIsAvailable(
-        OrderDeliveryScheduleInterface $deliverySelection,
-        ?string $district
-    ): void {
-        if ($deliverySelection->getDeliveryType() === OrderDeliveryScheduleInterface::DELIVERY_TYPE_PICKUP) {
-            $locations = $this->availabilityEngine->getAvailablePickupLocations(
-                null,
-                null,
-                null,
-                $deliverySelection->getDeliveryDate()
-            );
-
-            foreach ($locations as $location) {
-                if ((int)$location['entity_id'] !== (int)$deliverySelection->getPickupLocationId()) {
-                    continue;
-                }
-
-                foreach ($location['slots'] as $slot) {
-                    if ($slot['date'] === $deliverySelection->getDeliveryDate()) {
-                        return;
-                    }
-                }
-            }
-
-            throw new LocalizedException(__('Selected pickup option is no longer available.'));
-        }
-
-        if ($district === null || $district === '') {
-            throw new LocalizedException(__('District is required for home delivery.'));
-        }
-
-        $slots = $this->availabilityEngine->getAvailableDeliverySlots(
-            $district,
-            $deliverySelection->getDeliveryDate(),
-            $deliverySelection->getDeliveryDate()
-        );
-
-        $selectedRange = (string)$deliverySelection->getDeliverySlot();
-        foreach ($slots as $slot) {
-            $range = $slot['start_time'] . '-' . $slot['end_time'];
-            if ($range === $selectedRange || str_replace(':00', '', $range) === str_replace(':00', '', $selectedRange)) {
-                return;
-            }
-        }
-
-        throw new LocalizedException(__('Selected delivery slot is no longer available.'));
     }
 }

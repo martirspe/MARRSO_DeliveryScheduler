@@ -58,56 +58,67 @@
         </massaction>
     </listingToolbar>
     <columns name="marrso_delivery_slot_columns">
-        <column name="entity_id">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>
-                <label translate="true">ID</label>
+                <label translate="true">Identification Number (ID)</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
-        <column name="slot_date">
+        <column name="slot_date" sortOrder="20">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Date</label>
             </settings>
         </column>
-        <column name="start_time">
+        <column name="start_time" sortOrder="30">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Start</label>
             </settings>
         </column>
-        <column name="end_time">
+        <column name="end_time" sortOrder="40">
             <settings>
                 <filter>text</filter>
                 <label translate="true">End</label>
             </settings>
         </column>
-        <column name="district">
+        <column name="district" sortOrder="50">
             <settings>
                 <filter>text</filter>
                 <label translate="true">District</label>
             </settings>
         </column>
-        <column name="used_capacity">
+        <column name="service_level" sortOrder="60">
             <settings>
-                <filter>textRange</filter>
-                <label translate="true">Used</label>
+                <filter>text</filter>
+                <label translate="true">Service Level</label>
             </settings>
         </column>
-        <column name="capacity">
-            <settings>
-                <filter>textRange</filter>
-                <label translate="true">Capacity</label>
-            </settings>
-        </column>
-        <column name="price">
+        <column name="price" sortOrder="70">
             <settings>
                 <filter>textRange</filter>
                 <label translate="true">Price</label>
             </settings>
         </column>
-        <column name="is_active" component="Magento_Ui/js/grid/columns/select">
+        <column name="used_capacity" sortOrder="80">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Used</label>
+            </settings>
+        </column>
+        <column name="capacity" sortOrder="90">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Capacity</label>
+            </settings>
+        </column>
+        <column name="is_active" sortOrder="100" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
@@ -115,7 +126,7 @@
                 <label translate="true">Active</label>
             </settings>
         </column>
-        <actionsColumn name="actions" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\DeliverySlotActions">
+        <actionsColumn name="actions" sortOrder="110" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\DeliverySlotActions">
             <settings>
                 <indexField>entity_id</indexField>
                 <resizeEnabled>false</resizeEnabled>

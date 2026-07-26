@@ -12,6 +12,11 @@
         <column xsi:type="decimal" name="latitude" scale="8" precision="10" nullable="true" comment="Latitude"/>
         <column xsi:type="decimal" name="longitude" scale="8" precision="11" nullable="true" comment="Longitude"/>
         <column xsi:type="int" name="priority" unsigned="true" nullable="false" default="0" comment="Sort Priority"/>
+        <column xsi:type="varchar" name="brand" nullable="true" length="100" comment="Store Brand"/>
+        <column xsi:type="text" name="location_references" nullable="true" comment="Pickup References"/>
+        <column xsi:type="varchar" name="opening_hours" nullable="true" length="255" comment="Opening Hours"/>
+        <column xsi:type="smallint" name="retention_days" unsigned="true" nullable="false" default="5" comment="Order Retention Days"/>
+        <column xsi:type="boolean" name="auto_generate_slots" nullable="false" default="true" comment="Allow Cron To Auto Generate Slots"/>
         <column xsi:type="boolean" name="is_active" nullable="false" default="true" comment="Is Active"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
@@ -67,6 +72,7 @@
         <column xsi:type="varchar" name="start_time" nullable="false" length="8" comment="Start Time"/>
         <column xsi:type="varchar" name="end_time" nullable="false" length="8" comment="End Time"/>
         <column xsi:type="decimal" name="price" scale="2" precision="10" nullable="false" default="0" comment="Delivery Price"/>
+        <column xsi:type="varchar" name="service_level" nullable="false" length="20" default="scheduled" comment="scheduled|express_24|express_180"/>
         <column xsi:type="int" name="capacity" unsigned="true" nullable="false" default="20" comment="Max Capacity"/>
         <column xsi:type="int" name="used_capacity" unsigned="true" nullable="false" default="0" comment="Used Capacity"/>
         <column xsi:type="varchar" name="carrier_code" nullable="true" length="50" comment="Carrier Code"/>
@@ -82,6 +88,12 @@
             <column name="slot_date"/>
         </index>
         <index referenceId="IDX_IS_ACTIVE">
+            <column name="is_active"/>
+        </index>
+        <index referenceId="IDX_DISTRICT_DATE_LEVEL">
+            <column name="district"/>
+            <column name="slot_date"/>
+            <column name="service_level"/>
             <column name="is_active"/>
         </index>
         <index referenceId="IDX_CARRIER">
@@ -114,6 +126,7 @@
         <column xsi:type="int" name="pickup_location_id" unsigned="true" nullable="true" comment="Pickup Location ID"/>
         <column xsi:type="date" name="delivery_date" nullable="false" comment="Selected Delivery/Pickup Date"/>
         <column xsi:type="varchar" name="delivery_slot" nullable="true" length="50" comment="Time Slot HH:MM-HH:MM"/>
+        <column xsi:type="varchar" name="service_level" nullable="true" length="20" comment="Delivery Service Level"/>
         <column xsi:type="text" name="customer_comment" nullable="true" comment="Customer Delivery Instructions"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
@@ -121,10 +134,9 @@
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
-        <constraint xsi:type="unique" referenceId="UNQ_ORDER_ID">
+        <constraint xsi:type="unique" referenceId="UNQ_MARRSO_ORDER_DELIVERY_SCHEDULE_ORDER_ID">
             <column name="order_id"/>
         </constraint>
-        <constraint xsi:type="foreign" referenceId="FK_ORDER_ID" table="marrso_order_delivery_schedule" column="order_id" referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
         <index referenceId="IDX_QUOTE_ID">
             <column name="quote_id"/>
         </index>
@@ -139,6 +151,7 @@
         <column xsi:type="int" name="marrso_pickup_location_id" unsigned="true" nullable="true" comment="MARRSO Pickup Location ID"/>
         <column xsi:type="varchar" name="marrso_delivery_date" nullable="true" length="32" comment="MARRSO Delivery Date"/>
         <column xsi:type="varchar" name="marrso_delivery_slot" nullable="true" length="50" comment="MARRSO Delivery Slot"/>
+        <column xsi:type="varchar" name="marrso_service_level" nullable="true" length="20" comment="MARRSO Service Level"/>
         <column xsi:type="text" name="marrso_delivery_instructions" nullable="true" comment="MARRSO Delivery Instructions"/>
     </table>
 
@@ -147,6 +160,7 @@
         <column xsi:type="int" name="marrso_pickup_location_id" unsigned="true" nullable="true" comment="MARRSO Pickup Location ID"/>
         <column xsi:type="varchar" name="marrso_delivery_date" nullable="true" length="32" comment="MARRSO Delivery Date"/>
         <column xsi:type="varchar" name="marrso_delivery_slot" nullable="true" length="50" comment="MARRSO Delivery Slot"/>
+        <column xsi:type="varchar" name="marrso_service_level" nullable="true" length="20" comment="MARRSO Service Level"/>
         <column xsi:type="text" name="marrso_delivery_instructions" nullable="true" comment="MARRSO Delivery Instructions"/>
     </table>
 

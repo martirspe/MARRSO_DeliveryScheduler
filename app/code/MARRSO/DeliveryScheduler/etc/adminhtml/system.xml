@@ -29,6 +29,12 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
+                <field id="enable_express_checkout" translate="label comment" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Express Checkout Page</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Single-page checkout at /delivery/checkout/express with link from cart.</comment>
+                </field>
+
                 <field id="default_timezone" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Default Timezone</label>
                     <validate>validate-timezone</validate>
@@ -39,19 +45,19 @@
             <group id="pickup" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Pickup Points Configuration</label>
 
-                <field id="cutoff_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cutoff_hour" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cutoff Hour (24-hour format)</label>
                     <validate>validate-number validate-digits-range digits-range-0-23</validate>
                     <comment>Hour after which orders cannot be placed for same-day pickup</comment>
                 </field>
 
-                <field id="preparation_days" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="preparation_days" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Preparation Days (SLA)</label>
                     <validate>validate-number validate-digits</validate>
                     <comment>Number of business days required for order preparation</comment>
                 </field>
 
-                <field id="default_capacity" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="default_capacity" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Default Slot Capacity</label>
                     <validate>validate-number validate-digits validate-greater-than-zero</validate>
                     <comment>Default number of orders per pickup slot</comment>
@@ -61,13 +67,43 @@
                     <label>Disable Weekends</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+
+                <field id="enable_map" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Pickup Map</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show interactive map with pickup points in checkout.</comment>
+                </field>
+
+                <field id="map_default_lat" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Map Default Latitude</label>
+                    <validate>validate-number</validate>
+                    <depends>
+                        <field id="*/*/enable_map">1</field>
+                    </depends>
+                </field>
+
+                <field id="map_default_lng" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Map Default Longitude</label>
+                    <validate>validate-number</validate>
+                    <depends>
+                        <field id="*/*/enable_map">1</field>
+                    </depends>
+                </field>
+
+                <field id="map_default_zoom" translate="label" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Map Default Zoom</label>
+                    <validate>validate-number validate-digits-range digits-range-1-18</validate>
+                    <depends>
+                        <field id="*/*/enable_map">1</field>
+                    </depends>
+                </field>
             </group>
 
             <!-- ==================== DELIVERY CONFIGURATION ==================== -->
             <group id="delivery" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Home Delivery Configuration</label>
 
-                <field id="cutoff_hour" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cutoff_hour" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cutoff Hour (24-hour format)</label>
                     <validate>validate-number validate-digits-range digits-range-0-23</validate>
                     <comment>Hour after which orders cannot be placed for next-day delivery</comment>
@@ -78,7 +114,17 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="same_day_cutoff" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable_express_180" translate="label" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Express 180 Minutes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="enable_express_24" translate="label" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Express 24 Hours</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="same_day_cutoff" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Same-Day Cutoff Hour</label>
                     <validate>validate-number validate-digits-range digits-range-0-23</validate>
                     <comment>Hour after which same-day delivery is no longer available</comment>
@@ -87,13 +133,29 @@
                     </depends>
                 </field>
 
-                <field id="default_delivery_price" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="default_delivery_price" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Default Delivery Price</label>
                     <validate>validate-number validate-zero-or-greater</validate>
-                    <comment>Default cost for home delivery</comment>
+                    <comment>Default cost for scheduled home delivery</comment>
                 </field>
 
-                <field id="default_capacity" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="express_180_price" translate="label" type="text" sortOrder="41" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Express 180 Minutes Price</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <depends>
+                        <field id="*/*/enable_express_180">1</field>
+                    </depends>
+                </field>
+
+                <field id="express_24_price" translate="label" type="text" sortOrder="42" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Express 24 Hours Price</label>
+                    <validate>validate-number validate-zero-or-greater</validate>
+                    <depends>
+                        <field id="*/*/enable_express_24">1</field>
+                    </depends>
+                </field>
+
+                <field id="default_capacity" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Default Slot Capacity</label>
                     <validate>validate-number validate-digits validate-greater-than-zero</validate>
                     <comment>Default number of orders per delivery slot</comment>
@@ -109,25 +171,25 @@
             <group id="slot_generation" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Slot Generation</label>
 
-                <field id="days_ahead" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="days_ahead" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Generate Slots X Days Ahead</label>
                     <validate>validate-number validate-digits</validate>
                     <comment>Number of days in advance to generate availability slots</comment>
                 </field>
 
-                <field id="slot_interval_minutes" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="slot_interval_minutes" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Slot Interval (Minutes)</label>
                     <validate>validate-number validate-digits</validate>
                     <comment>Duration of each delivery time slot</comment>
                 </field>
 
-                <field id="start_time" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="start_time" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Daily Start Time (HH:MM)</label>
                     <validate>validate-time</validate>
                     <comment>First slot start time each day</comment>
                 </field>
 
-                <field id="end_time" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="end_time" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Daily End Time (HH:MM)</label>
                     <validate>validate-time</validate>
                     <comment>Last slot end time each day</comment>
@@ -143,13 +205,13 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
 
-                <field id="cache_lifetime" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cache_lifetime" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cache Lifetime (seconds)</label>
                     <validate>validate-number validate-digits</validate>
                     <comment>Cache lifetime for availability queries</comment>
                 </field>
 
-                <field id="max_distance_km" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="max_distance_km" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Maximum Distance (km)</label>
                     <validate>validate-number validate-zero-or-greater</validate>
                     <comment>Maximum distance to show pickup points (0 = unlimited)</comment>

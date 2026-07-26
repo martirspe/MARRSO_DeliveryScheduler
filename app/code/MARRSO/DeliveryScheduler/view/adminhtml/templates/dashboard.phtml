@@ -1,0 +1,65 @@
+<?php
+/** @var \MARRSO\DeliveryScheduler\Block\Adminhtml\Dashboard $block */
+?>
+<div class="marrso-dashboard">
+    <div class="marrso-dashboard__hero">
+        <div class="marrso-dashboard__hero-text">
+            <h1 class="marrso-dashboard__title"><?= $block->escapeHtml(__('Delivery Scheduler')) ?></h1>
+            <p class="marrso-dashboard__subtitle">
+                <?= $block->escapeHtml(__('MARRSO extension — manage pickup points, delivery slots, holidays and checkout settings from one place.')) ?>
+            </p>
+        </div>
+        <div class="marrso-dashboard__badges">
+            <span class="marrso-badge <?= $block->isModuleEnabled() ? 'is-on' : 'is-off' ?>">
+                <?= $block->escapeHtml($block->isModuleEnabled() ? __('Module enabled') : __('Module disabled')) ?>
+            </span>
+            <?php if ($block->isPickupEnabled()): ?>
+                <span class="marrso-badge is-on"><?= $block->escapeHtml(__('Pickup')) ?></span>
+            <?php endif; ?>
+            <?php if ($block->isDeliveryEnabled()): ?>
+                <span class="marrso-badge is-on"><?= $block->escapeHtml(__('Delivery')) ?></span>
+            <?php endif; ?>
+            <?php if ($block->isExpressCheckoutEnabled()): ?>
+                <span class="marrso-badge is-on"><?= $block->escapeHtml(__('Express checkout')) ?></span>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="marrso-dashboard__stats">
+        <?php foreach ($block->getStatCards() as $stat): ?>
+            <a class="marrso-stat-card" href="<?= $block->escapeUrl($stat['url']) ?>">
+                <span class="marrso-stat-card__value"><?= (int)$stat['value'] ?></span>
+                <span class="marrso-stat-card__label"><?= $block->escapeHtml($stat['label']) ?></span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+
+    <h2 class="marrso-dashboard__section-title"><?= $block->escapeHtml(__('Quick access')) ?></h2>
+    <div class="marrso-dashboard__cards">
+        <?php foreach ($block->getManageCards() as $card): ?>
+            <div class="marrso-card marrso-card--<?= $block->escapeHtmlAttr($card['icon']) ?>">
+                <h3 class="marrso-card__title"><?= $block->escapeHtml($card['title']) ?></h3>
+                <p class="marrso-card__text"><?= $block->escapeHtml($card['description']) ?></p>
+                <a class="action-default marrso-card__button" href="<?= $block->escapeUrl($card['url']) ?>">
+                    <?= $block->escapeHtml($card['button']) ?>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <div class="marrso-dashboard__shortcuts">
+        <h2 class="marrso-dashboard__section-title"><?= $block->escapeHtml(__('Configuration shortcuts')) ?></h2>
+        <p class="marrso-dashboard__hint">
+            <?= $block->escapeHtml(__('Jump directly to a settings group without browsing Stores → Configuration.')) ?>
+        </p>
+        <ul class="marrso-shortcuts">
+            <?php foreach ($block->getConfigShortcuts() as $shortcut): ?>
+                <li>
+                    <a href="<?= $block->escapeUrl($shortcut['url']) ?>">
+                        <?= $block->escapeHtml($shortcut['label']) ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>

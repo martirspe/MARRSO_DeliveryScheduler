@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="MARRSO_Base::marrso"
+             title="MARRSO"
+             translate="title"
+             module="MARRSO_Base"
+             sortOrder="45"
+             action="marrso/dashboard/index"
+             resource="MARRSO_Base::menu"/>
+
+        <add id="MARRSO_Base::extensions"
+             title="Extensions"
+             translate="title"
+             module="MARRSO_Base"
+             sortOrder="10"
+             parent="MARRSO_Base::marrso"
+             resource="MARRSO_Base::menu"/>
+
+        <add id="MARRSO_Base::settings"
+             title="Settings &amp; Configuration"
+             translate="title"
+             module="MARRSO_Base"
+             sortOrder="30"
+             parent="MARRSO_Base::marrso"
+             resource="MARRSO_Base::menu"/>
+    </menu>
+</config>

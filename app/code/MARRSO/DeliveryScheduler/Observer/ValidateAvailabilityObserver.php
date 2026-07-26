@@ -40,7 +40,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
         }
 
         $quote = $observer->getEvent()->getQuote();
-        if (!$quote instanceof Quote) {
+        if (!$quote instanceof Quote || $quote->getIsVirtual()) {
             return;
         }
 
@@ -51,7 +51,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
 
         $deliveryType = $this->getValue($shippingAddress, 'delivery_type');
         if (!$deliveryType) {
-            return;
+            throw new LocalizedException(__('Please select pickup or home delivery.'));
         }
 
         try {
@@ -67,6 +67,7 @@ class ValidateAvailabilityObserver implements ObserverInterface
             throw $e;
         } catch (\Exception $e) {
             $this->logger->error('Error in validate availability observer: ' . $e->getMessage());
+            throw new LocalizedException(__('Unable to validate delivery selection. Please try again.'));
         }
     }
 
@@ -93,10 +94,17 @@ class ValidateAvailabilityObserver implements ObserverInterface
             ->addFilter('is_active', true)
             ->create();
 
+        $slotRange = $this->getValue($shippingAddress, 'delivery_slot');
         foreach ($this->pickupSlotRepository->getList($searchCriteria)->getItems() as $slot) {
-            if ($slot->getUsedCapacity() < $slot->getCapacity()) {
-                return;
+            if ($slot->getUsedCapacity() >= $slot->getCapacity()) {
+                continue;
             }
+
+            if ($slotRange && !$this->slotMatchesRange($slot->getStartTime(), $slot->getEndTime(), $slotRange)) {
+                continue;
+            }
+
+            return;
         }
 
         throw new LocalizedException(__('Selected pickup slot is no longer available.'));
@@ -116,14 +124,20 @@ class ValidateAvailabilityObserver implements ObserverInterface
             throw new LocalizedException(__('Please select a valid delivery slot.'));
         }
 
+        $district = trim((string)$shippingAddress->getCity());
+        if ($district === '') {
+            throw new LocalizedException(__('District is required for home delivery.'));
+        }
+
         $searchCriteria = $this->createSearchCriteriaBuilder()
+            ->addFilter('district', $district)
             ->addFilter('slot_date', $deliveryDate)
             ->addFilter('is_active', true)
             ->create();
 
         $selectedSlot = null;
         foreach ($this->deliverySlotRepository->getList($searchCriteria)->getItems() as $slot) {
-            if ($slot->getStartTime() === $startTime && $slot->getEndTime() === $endTime) {
+            if ($this->timesMatch($slot->getStartTime(), $startTime) && $this->timesMatch($slot->getEndTime(), $endTime)) {
                 $selectedSlot = $slot;
                 break;
             }
@@ -187,5 +201,19 @@ class ValidateAvailabilityObserver implements ObserverInterface
     private function createSearchCriteriaBuilder(): SearchCriteriaBuilder
     {
         return clone $this->searchCriteriaBuilder;
+    }
+
+    private function timesMatch(string $left, string $right): bool
+    {
+        return substr($left, 0, 5) === substr($right, 0, 5);
+    }
+
+    private function slotMatchesRange(string $startTime, string $endTime, string $slotRange): bool
+    {
+        [$start, $end] = array_pad(explode('-', $slotRange), 2, null);
+
+        return $start && $end
+            && $this->timesMatch($startTime, $start)
+            && $this->timesMatch($endTime, $end);
     }
 }

@@ -1,0 +1,265 @@
+/**
+ * MARRSO Base — admin menu logo & shared dashboard styles
+ *
+ * Menu class is generated from id MARRSO_Base::marrso → item-marrso-base-marrso
+ */
+
+.admin__menu .level-0.item-marrso-base-marrso > a:before,
+.admin__menu .level-0[class*="item-marrso-base-marrso"] > a:before,
+.admin__menu #menu-marrso-base-marrso > a:before,
+.admin__menu .level-0.item-marrso > a:before,
+.admin__menu #menu-MARRSO_Base_marrso > a:before {
+    content: '' !important;
+    display: block !important;
+    font-family: inherit !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    speak: never;
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    min-width: 2.2rem !important;
+    min-height: 2.2rem !important;
+    margin: 0 auto 0.3rem !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    background-color: transparent !important;
+    background-image: url('../images/logo.svg') !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: contain !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+.admin__menu .level-0.item-marrso-base-marrso._active > a:before,
+.admin__menu .level-0.item-marrso-base-marrso._show > a:before,
+.admin__menu .level-0.item-marrso-base-marrso:hover > a:before,
+.admin__menu .level-0[class*="item-marrso-base-marrso"]._active > a:before,
+.admin__menu .level-0[class*="item-marrso-base-marrso"]._show > a:before,
+.admin__menu .level-0[class*="item-marrso-base-marrso"]:hover > a:before,
+.admin__menu #menu-marrso-base-marrso._active > a:before,
+.admin__menu #menu-marrso-base-marrso._show > a:before,
+.admin__menu #menu-marrso-base-marrso:hover > a:before,
+.admin__menu .level-0.item-marrso._active > a:before,
+.admin__menu .level-0.item-marrso._show > a:before,
+.admin__menu .level-0.item-marrso:hover > a:before,
+.admin__menu #menu-MARRSO_Base_marrso._active > a:before,
+.admin__menu #menu-MARRSO_Base_marrso._show > a:before,
+.admin__menu #menu-MARRSO_Base_marrso:hover > a:before {
+    background-image: url('../images/logo-active.svg') !important;
+    background-color: transparent !important;
+}
+
+.admin__menu._collapsed .level-0.item-marrso-base-marrso > a:before,
+.admin__menu._collapsed .level-0[class*="item-marrso-base-marrso"] > a:before,
+.admin__menu._collapsed #menu-marrso-base-marrso > a:before {
+    margin-bottom: 0 !important;
+}
+
+.admin__menu .level-0.item-marrso-base-marrso .submenu a:before,
+.admin__menu .level-0[class*="item-marrso-base-marrso"] .submenu a:before,
+.admin__menu .item-marrso .submenu a:before,
+.admin__menu li.item-marrso-dashboard > a:before {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    background-image: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+}
+
+.marrso-dashboard {
+    max-width: 1200px;
+    padding-bottom: 40px;
+}
+
+.marrso-dashboard__hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 24px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f9fdf4 0%, #ffffff 100%);
+}
+
+.marrso-dashboard__title {
+    margin: 0 0 8px;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: #303030;
+}
+
+.marrso-dashboard__subtitle {
+    margin: 0;
+    max-width: 640px;
+    color: #666;
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+.marrso-dashboard__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.marrso-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: #f0f0f0;
+    color: #666;
+}
+
+.marrso-badge.is-on {
+    background: #e8f5d6;
+    color: #4a7c16;
+}
+
+.marrso-badge.is-off {
+    background: #fdecea;
+    color: #b71c1c;
+}
+
+.marrso-dashboard__section-title {
+    margin: 28px 0 16px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #303030;
+}
+
+.marrso-dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.marrso-stat-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background: #fff;
+    text-decoration: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.marrso-stat-card:hover {
+    border-color: #8dc63f;
+    box-shadow: 0 2px 8px rgba(141, 198, 63, 0.15);
+    text-decoration: none;
+}
+
+.marrso-stat-card__value {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #303030;
+}
+
+.marrso-stat-card__label {
+    margin-top: 8px;
+    font-size: 1.3rem;
+    color: #666;
+}
+
+.marrso-dashboard__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.marrso-card {
+    padding: 20px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background: #fff;
+    border-top: 4px solid #8dc63f;
+}
+
+.marrso-card--extension { border-top-color: #8dc63f; }
+.marrso-card--settings { border-top-color: #514943; }
+.marrso-card--pickup { border-top-color: #8dc63f; }
+.marrso-card--slots { border-top-color: #007bdb; }
+.marrso-card--delivery { border-top-color: #eb5202; }
+.marrso-card--holiday { border-top-color: #946038; }
+
+.marrso-card__title {
+    margin: 0 0 8px;
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.marrso-card__text {
+    margin: 0 0 16px;
+    min-height: 48px;
+    color: #666;
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.marrso-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.marrso-card__button {
+    font-weight: 600;
+}
+
+.marrso-dashboard__shortcuts {
+    margin-top: 28px;
+    padding: 20px;
+    border: 1px solid #e3e3e3;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.marrso-dashboard__shortcuts .marrso-dashboard__section-title {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.marrso-dashboard__hint {
+    margin: 0 0 12px;
+    color: #666;
+    font-size: 1.3rem;
+}
+
+.marrso-shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.marrso-shortcuts a {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.marrso-shortcuts a:hover {
+    border-color: #8dc63f;
+    color: #4a7c16;
+    text-decoration: none;
+}

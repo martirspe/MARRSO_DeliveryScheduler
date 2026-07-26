@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="order.additional.info">
+            <block class="MARRSO\DeliveryScheduler\Block\Sales\Order\DeliveryInfo"
+                   name="marrso.delivery.scheduler.order.info"
+                   template="MARRSO_DeliveryScheduler::order/delivery_info.phtml"
+                   after="sales.order.info.links"/>
+        </referenceContainer>
+    </body>
+</page>

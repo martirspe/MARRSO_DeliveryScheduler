@@ -5,26 +5,29 @@ namespace MARRSO\DeliveryScheduler\Model\Service;
 
 use MARRSO\DeliveryScheduler\Api\GetDeliverySlotsInterface;
 
-/**
- * Get Delivery Slots Service Implementation
- */
 class GetDeliverySlots implements GetDeliverySlotsInterface
 {
-    /**
-     * @var AvailabilityEngine
-     */
-    private $availabilityEngine;
-
-    public function __construct(AvailabilityEngine $availabilityEngine)
-    {
-        $this->availabilityEngine = $availabilityEngine;
+    public function __construct(
+        private readonly AvailabilityEngine $availabilityEngine
+    ) {
     }
 
     public function execute(
-        string $district,
+        ?string $district = null,
         ?string $startDate = null,
-        ?string $endDate = null
+        ?string $endDate = null,
+        ?string $serviceLevel = null
     ): array {
-        return $this->availabilityEngine->getAvailableDeliverySlots($district, $startDate, $endDate);
+        $district = trim((string)$district);
+        if ($district === '') {
+            return [];
+        }
+
+        return $this->availabilityEngine->getAvailableDeliverySlots(
+            $district,
+            $startDate,
+            $endDate,
+            $serviceLevel
+        );
     }
 }

@@ -1,0 +1,21 @@
+<?php
+/** @var \MARRSO\DeliveryScheduler\Block\Checkout\Express $block */
+?>
+<?php if ($block->isEnabled()): ?>
+<div class="marrso-express-page">
+    <div id="marrso-express-checkout-root" data-bind="scope: 'marrso-express-checkout'">
+        <!-- ko template: getTemplate() --><!-- /ko -->
+    </div>
+</div>
+<script type="text/x-magento-init">
+{
+    "#marrso-express-checkout-root": {
+        "Magento_Ui/js/core/app": <?= /* @noEscape */ $block->getJsLayout() ?>
+    }
+}
+</script>
+<script>
+    window.checkoutConfig = window.checkoutConfig || {};
+    Object.assign(window.checkoutConfig, <?= /* @noEscape */ $block->getCheckoutConfigJson() ?>);
+</script>
+<?php endif; ?>

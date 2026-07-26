@@ -18,6 +18,7 @@ interface DeliverySlotInterface extends ExtensibleDataInterface
     const START_TIME = 'start_time';
     const END_TIME = 'end_time';
     const PRICE = 'price';
+    const SERVICE_LEVEL = 'service_level';
     const CAPACITY = 'capacity';
     const USED_CAPACITY = 'used_capacity';
     const CARRIER_CODE = 'carrier_code';
@@ -114,6 +115,21 @@ interface DeliverySlotInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setPrice(float $price): self;
+
+    /**
+     * Get Service Level
+     *
+     * @return string
+     */
+    public function getServiceLevel(): string;
+
+    /**
+     * Set Service Level
+     *
+     * @param string $serviceLevel
+     * @return $this
+     */
+    public function setServiceLevel(string $serviceLevel): self;
 
     /**
      * Get Capacity

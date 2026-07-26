@@ -20,6 +20,11 @@ interface PickupLocationInterface extends ExtensibleDataInterface
     const LATITUDE = 'latitude';
     const LONGITUDE = 'longitude';
     const PRIORITY = 'priority';
+    const BRAND = 'brand';
+    const LOCATION_REFERENCES = 'location_references';
+    const OPENING_HOURS = 'opening_hours';
+    const RETENTION_DAYS = 'retention_days';
+    const AUTO_GENERATE_SLOTS = 'auto_generate_slots';
     const IS_ACTIVE = 'is_active';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -143,6 +148,77 @@ interface PickupLocationInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setPriority(int $priority): self;
+
+    /**
+     * Get Brand
+     *
+     * @return string|null
+     */
+    public function getBrand(): ?string;
+
+    /**
+     * Set Brand
+     *
+     * @param string|null $brand
+     * @return $this
+     */
+    public function setBrand(?string $brand): self;
+
+    /**
+     * Get Location References
+     *
+     * @return string|null
+     */
+    public function getLocationReferences(): ?string;
+
+    /**
+     * Set Location References
+     *
+     * @param string|null $references
+     * @return $this
+     */
+    public function setLocationReferences(?string $references): self;
+
+    /**
+     * Get Opening Hours
+     *
+     * @return string|null
+     */
+    public function getOpeningHours(): ?string;
+
+    /**
+     * Set Opening Hours
+     *
+     * @param string|null $openingHours
+     * @return $this
+     */
+    public function setOpeningHours(?string $openingHours): self;
+
+    /**
+     * Get Retention Days
+     *
+     * @return int
+     */
+    public function getRetentionDays(): int;
+
+    /**
+     * Set Retention Days
+     *
+     * @param int $retentionDays
+     * @return $this
+     */
+    public function setRetentionDays(int $retentionDays): self;
+
+    /**
+     * Whether cron / checkout ensurer may auto-create slots for this location.
+     */
+    public function getAutoGenerateSlots(): bool;
+
+    /**
+     * @param bool $autoGenerateSlots
+     * @return $this
+     */
+    public function setAutoGenerateSlots(bool $autoGenerateSlots): self;
 
     /**
      * Get Is Active

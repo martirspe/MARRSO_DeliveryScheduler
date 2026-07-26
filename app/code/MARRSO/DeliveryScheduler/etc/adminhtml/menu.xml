@@ -2,35 +2,75 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
-        <add id="MARRSO_DeliveryScheduler::menu"
+        <add id="MARRSO_DeliveryScheduler::delivery_scheduler"
              title="Delivery Scheduler"
+             translate="title"
              module="MARRSO_DeliveryScheduler"
-             sortOrder="100"
-             parent="Magento_Backend::content"
+             sortOrder="10"
+             parent="MARRSO_Base::extensions"
+             action="marrso_delivery_scheduler/dashboard/index"
+             resource="MARRSO_DeliveryScheduler::menu"/>
+
+        <add id="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
+             title="Delivery Scheduler"
+             translate="title"
+             module="MARRSO_DeliveryScheduler"
+             sortOrder="20"
+             parent="MARRSO_Base::marrso"
+             resource="MARRSO_DeliveryScheduler::menu"/>
+
+        <add id="MARRSO_DeliveryScheduler::marrso_dashboard"
+             title="Dashboard"
+             translate="title"
+             module="MARRSO_DeliveryScheduler"
+             sortOrder="5"
+             parent="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
+             action="marrso_delivery_scheduler/dashboard/index"
              resource="MARRSO_DeliveryScheduler::menu"/>
 
         <add id="MARRSO_DeliveryScheduler::pickup_locations"
              title="Pickup Locations"
+             translate="title"
              module="MARRSO_DeliveryScheduler"
-             sortOrder="10"
-             parent="MARRSO_DeliveryScheduler::menu"
+             sortOrder="20"
+             parent="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
              action="marrso_delivery_scheduler/pickuplocation/index"
-             resource="MARRSO_DeliveryScheduler::pickup_locations_view"/>
+             resource="MARRSO_DeliveryScheduler::menu"/>
+
+        <add id="MARRSO_DeliveryScheduler::pickup_slots"
+             title="Pickup Slots"
+             translate="title"
+             module="MARRSO_DeliveryScheduler"
+             sortOrder="25"
+             parent="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
+             action="marrso_delivery_scheduler/pickupslot/index"
+             resource="MARRSO_DeliveryScheduler::menu"/>
 
         <add id="MARRSO_DeliveryScheduler::delivery_slots"
              title="Delivery Slots"
+             translate="title"
              module="MARRSO_DeliveryScheduler"
-             sortOrder="20"
-             parent="MARRSO_DeliveryScheduler::menu"
+             sortOrder="30"
+             parent="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
              action="marrso_delivery_scheduler/deliveryslot/index"
-             resource="MARRSO_DeliveryScheduler::delivery_slots_view"/>
+             resource="MARRSO_DeliveryScheduler::menu"/>
 
         <add id="MARRSO_DeliveryScheduler::holidays"
              title="Holidays"
+             translate="title"
              module="MARRSO_DeliveryScheduler"
-             sortOrder="30"
-             parent="MARRSO_DeliveryScheduler::menu"
+             sortOrder="40"
+             parent="MARRSO_DeliveryScheduler::delivery_scheduler_manage"
              action="marrso_delivery_scheduler/holiday/index"
-             resource="MARRSO_DeliveryScheduler::holidays_view"/>
+             resource="MARRSO_DeliveryScheduler::menu"/>
+
+        <add id="MARRSO_DeliveryScheduler::configuration"
+             title="Delivery Scheduler"
+             translate="title"
+             module="MARRSO_DeliveryScheduler"
+             sortOrder="10"
+             parent="MARRSO_Base::settings"
+             action="adminhtml/system_config/edit/section/marrso_delivery_scheduler"
+             resource="MARRSO_DeliveryScheduler::config"/>
     </menu>
 </config>

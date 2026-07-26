@@ -5,15 +5,18 @@ namespace MARRSO\DeliveryScheduler\Controller\Adminhtml\PickupLocation;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
+use Magento\Framework\Data\Form\FormKey\Validator as FormKeyValidator;
 use MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface;
 
-class Delete extends Action
+class Delete extends Action implements HttpPostActionInterface
 {
     public const ADMIN_RESOURCE = 'MARRSO_DeliveryScheduler::pickup_locations_delete';
 
     public function __construct(
         Context $context,
-        private readonly PickupLocationRepositoryInterface $pickupLocationRepository
+        private readonly PickupLocationRepositoryInterface $pickupLocationRepository,
+        private readonly FormKeyValidator $formKeyValidator
     ) {
         parent::__construct($context);
     }
@@ -21,6 +24,12 @@ class Delete extends Action
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
+
+        if (!$this->formKeyValidator->validate($this->getRequest())) {
+            $this->messageManager->addErrorMessage(__('Invalid form key.'));
+            return $resultRedirect->setPath('*/*/');
+        }
+
         $id = (int)$this->getRequest()->getParam('entity_id');
 
         if (!$id) {

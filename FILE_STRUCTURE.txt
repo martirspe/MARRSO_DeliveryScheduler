@@ -1,29 +1,72 @@
-MARRSO_DeliveryScheduler - Complete Project Structure
-=====================================================
+MARRSO Extension Suite - Complete Project Structure
+==================================================
+
+Repository layout (Amasty-style vendor structure):
+
+app/code/MARRSO/
+├── Base/                    → MARRSO_Base (marrso/module-base)
+└── DeliveryScheduler/       → MARRSO_DeliveryScheduler (marrso/module-delivery-scheduler)
+
+Root files:
+├── README.md
+├── INSTALLATION.md
+├── CHANGELOG.md
+├── composer.json            → Metapackage autoload for both modules
+└── FILE_STRUCTURE.txt
+
+═══════════════════════════════════════════════════════════════
+MARRSO_Base — Shared platform module
+═══════════════════════════════════════════════════════════════
+
+app/code/MARRSO/Base/
+├── registration.php
+├── composer.json
+├── etc/
+│   ├── module.xml
+│   ├── acl.xml
+│   └── adminhtml/
+│       ├── menu.xml         [MARRSO root, Extensions, Settings groups]
+│       └── routes.xml       [frontName: marrso]
+├── Model/
+│   └── ExtensionPool.php    [Event: marrso_base_collect_extensions]
+├── Controller/Adminhtml/Dashboard/Index.php
+├── Block/Adminhtml/Dashboard.php
+├── Setup/Patch/Data/GrantBaseMenuToExistingRoles.php
+├── i18n/es_ES.csv
+└── view/adminhtml/
+    ├── layout/default.xml, marrso_dashboard_index.xml
+    ├── templates/dashboard.phtml
+    └── web/
+        ├── css/marrso-admin.css, css/source/_module.less
+        └── images/logo.svg, logo-active.svg
+
+═══════════════════════════════════════════════════════════════
+MARRSO_DeliveryScheduler — Delivery product module
+═══════════════════════════════════════════════════════════════
 
 DeliveryScheduler/
 ├── app/code/MARRSO/DeliveryScheduler/
 │
 ├── ✅ CORE MODULE FILES
 │   ├── registration.php                          [Module Registration]
-│   ├── composer.json                             [Composer Metadata]
+│   ├── composer.json                             [Requires marrso/module-base]
 │
 ├── ✅ CONFIGURATION (etc/)
-│   ├── module.xml                                [Module Configuration]
+│   ├── module.xml                                [Sequence: MARRSO_Base first]
 │   ├── db_schema.xml                             [Database Schema - 5 Tables]
 │   ├── db_schema_whitelist.json                  [Schema Whitelist]
-│   ├── di.xml                                    [Dependency Injection - 100+ definitions]
+│   ├── di.xml                                    [Dependency Injection]
 │   ├── extension_attributes.xml                  [Extension Attributes]
-│   ├── webapi.xml                                [REST API Routes - 25+ endpoints]
-│   ├── events.xml                                [Event Observers]
-│   ├── crontab.xml                               [Cron Jobs - 2 jobs]
-│   ├── acl.xml                                   [Access Control Lists]
+│   ├── webapi.xml                                [REST API Routes]
+│   ├── events.xml                                [Observers incl. RegisterBaseExtension]
+│   ├── crontab.xml                               [Cron Jobs]
+│   ├── acl.xml                                   [Nested under MARRSO_Base::menu]
 │   │
 │   └── adminhtml/
-│       ├── di.xml                                [Admin DI]
-│       ├── system.xml                            [System Configuration - 25+ options]
-│       ├── routes.xml                            [Admin Routes]
-│       └── menu.xml                              [Admin Menu]
+│       ├── di.xml                                [Admin DI / grid collections]
+│       ├── system.xml                            [System Configuration]
+│       ├── routes.xml                            [frontName: marrso_delivery_scheduler]
+│       └── menu.xml                              [Items under MARRSO_Base groups]
 │
 ├── ✅ SERVICE CONTRACTS (Api/)
 │   ├── Data/

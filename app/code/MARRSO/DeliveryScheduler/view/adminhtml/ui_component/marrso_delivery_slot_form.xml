@@ -11,6 +11,7 @@
     </argument>
     <settings>
         <namespace>marrso_delivery_slot_form</namespace>
+        <dataScope>data</dataScope>
         <deps>
             <dep>marrso_delivery_slot_form.marrso_delivery_slot_form_data_source</dep>
         </deps>
@@ -38,7 +39,6 @@
     <fieldset name="general">
         <settings>
             <label translate="true">Slot Information</label>
-            <dataScope/>
         </settings>
         <field name="entity_id" formElement="input">
             <settings>
@@ -87,6 +87,19 @@
                 <dataType>text</dataType>
                 <label translate="true">Price</label>
             </settings>
+        </field>
+        <field name="service_level" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Service Level</label>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="MARRSO\DeliveryScheduler\Model\Config\Source\ServiceLevel"/>
+                    </settings>
+                </select>
+            </formElements>
         </field>
         <field name="capacity" formElement="input">
             <settings>

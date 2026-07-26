@@ -10,6 +10,8 @@ use Psr\Log\LoggerInterface;
 use MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleInterface;
 use MARRSO\DeliveryScheduler\Api\Data\OrderDeliveryScheduleInterfaceFactory;
 use MARRSO\DeliveryScheduler\Api\OrderDeliveryScheduleRepositoryInterface;
+use MARRSO\DeliveryScheduler\Model\Config\ConfigProvider;
+use MARRSO\DeliveryScheduler\Model\Service\SlotCapacityManager;
 
 /**
  * Quote Submit Observer
@@ -36,6 +38,8 @@ class QuoteSubmitObserver implements ObserverInterface
     public function __construct(
         OrderDeliveryScheduleInterfaceFactory $orderDeliveryScheduleFactory,
         OrderDeliveryScheduleRepositoryInterface $orderDeliveryScheduleRepository,
+        private readonly SlotCapacityManager $slotCapacityManager,
+        private readonly ConfigProvider $configProvider,
         LoggerInterface $logger
     ) {
         $this->orderDeliveryScheduleFactory = $orderDeliveryScheduleFactory;
@@ -46,10 +50,14 @@ class QuoteSubmitObserver implements ObserverInterface
     public function execute(Observer $observer): void
     {
         try {
+            if (!$this->configProvider->isEnabled()) {
+                return;
+            }
+
             $quote = $observer->getEvent()->getQuote();
             $order = $observer->getEvent()->getOrder();
 
-            if (!$quote || !$order) {
+            if (!$quote || !$order || $quote->getIsVirtual()) {
                 return;
             }
 
@@ -57,6 +65,8 @@ class QuoteSubmitObserver implements ObserverInterface
             if (!$shippingAddress) {
                 return;
             }
+
+            $this->slotCapacityManager->reserveFromAddress($shippingAddress);
 
             $schedule = $this->resolveSchedule($quote, $shippingAddress);
             if (!$schedule) {
@@ -67,9 +77,13 @@ class QuoteSubmitObserver implements ObserverInterface
             $schedule->setQuoteId((int)$quote->getId());
 
             $this->orderDeliveryScheduleRepository->save($schedule);
-            $this->logger->info(sprintf('Saved delivery schedule for order %d', $order->getId()));
+
+            if ($this->configProvider->isLoggingEnabled()) {
+                $this->logger->info(sprintf('Saved delivery schedule for order %d', $order->getId()));
+            }
         } catch (\Exception $e) {
             $this->logger->error('Error in quote submit observer: ' . $e->getMessage());
+            throw $e;
         }
     }
 
@@ -96,6 +110,7 @@ class QuoteSubmitObserver implements ObserverInterface
         $schedule->setPickupLocationId($this->getIntValue($shippingAddress, 'pickup_location_id', $schedule->getPickupLocationId()));
         $schedule->setDeliveryDate((string)$this->getValue($shippingAddress, 'delivery_date', $schedule->getDeliveryDate()));
         $schedule->setDeliverySlot((string)$this->getValue($shippingAddress, 'delivery_slot', $schedule->getDeliverySlot()));
+        $schedule->setServiceLevel($this->getValue($shippingAddress, 'service_level', $schedule->getServiceLevel()));
         $schedule->setCustomerComment((string)$this->getValue($shippingAddress, 'delivery_instructions', $schedule->getCustomerComment()));
 
         return $schedule;

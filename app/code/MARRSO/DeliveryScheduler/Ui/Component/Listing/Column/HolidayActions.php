@@ -45,6 +45,7 @@ class HolidayActions extends Column
                         ['entity_id' => $item['entity_id']]
                     ),
                     'label' => __('Delete'),
+                    'post' => true,
                     'confirm' => [
                         'title' => __('Delete Holiday'),
                         'message' => __('Are you sure you want to delete this holiday?'),

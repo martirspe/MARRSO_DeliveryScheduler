@@ -127,6 +127,64 @@ class PickupLocation extends AbstractModel implements PickupLocationInterface, I
         return $this->setData(self::PRIORITY, $priority);
     }
 
+    public function getBrand(): ?string
+    {
+        $value = $this->getData(self::BRAND);
+        return $value !== null && $value !== '' ? (string)$value : null;
+    }
+
+    public function setBrand(?string $brand): self
+    {
+        return $this->setData(self::BRAND, $brand);
+    }
+
+    public function getLocationReferences(): ?string
+    {
+        $value = $this->getData(self::LOCATION_REFERENCES);
+        return $value !== null && $value !== '' ? (string)$value : null;
+    }
+
+    public function setLocationReferences(?string $references): self
+    {
+        return $this->setData(self::LOCATION_REFERENCES, $references);
+    }
+
+    public function getOpeningHours(): ?string
+    {
+        $value = $this->getData(self::OPENING_HOURS);
+        return $value !== null && $value !== '' ? (string)$value : null;
+    }
+
+    public function setOpeningHours(?string $openingHours): self
+    {
+        return $this->setData(self::OPENING_HOURS, $openingHours);
+    }
+
+    public function getRetentionDays(): int
+    {
+        return (int)($this->getData(self::RETENTION_DAYS) ?: 5);
+    }
+
+    public function setRetentionDays(int $retentionDays): self
+    {
+        return $this->setData(self::RETENTION_DAYS, max(1, $retentionDays));
+    }
+
+    public function getAutoGenerateSlots(): bool
+    {
+        $value = $this->getData(self::AUTO_GENERATE_SLOTS);
+        if ($value === null) {
+            return true;
+        }
+
+        return (bool)$value;
+    }
+
+    public function setAutoGenerateSlots(bool $autoGenerateSlots): self
+    {
+        return $this->setData(self::AUTO_GENERATE_SLOTS, $autoGenerateSlots ? 1 : 0);
+    }
+
     public function getIsActive(): bool
     {
         return (bool)$this->getData(self::IS_ACTIVE);

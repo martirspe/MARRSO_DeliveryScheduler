@@ -1,0 +1,13 @@
+<?php
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \MARRSO\DeliveryScheduler\ViewModel\ExpressCheckoutLink $expressLink */
+$expressLink = $block->getData('express_link');
+?>
+<?php if ($expressLink && $expressLink->isVisible()): ?>
+<div class="marrso-express-cart-link">
+    <a class="action secondary marrso-express-cart-link__button"
+       href="<?= $block->escapeUrl($expressLink->getUrl()) ?>">
+        <span><?= $block->escapeHtml(__('Express Checkout')) ?></span>
+    </a>
+</div>
+<?php endif; ?>

@@ -1,0 +1,101 @@
+<div class="marrso-express">
+    <div class="marrso-express__header">
+        <a class="marrso-express__back" data-bind="attr: { href: expressConfig.cartUrl }, i18n: 'Back to cart'"></a>
+        <h1 class="marrso-express__title" data-bind="i18n: 'Express Checkout'"></h1>
+    </div>
+
+    <div class="marrso-express__layout">
+        <div class="marrso-express__main">
+            <section class="marrso-express__section">
+                <h2 class="marrso-express__section-title" data-bind="i18n: 'Contact & address'"></h2>
+
+                <div class="marrso-express__form-grid">
+                    <div class="field required">
+                        <label class="label" for="marrso-express-firstname"><span data-bind="i18n: 'First Name'"></span></label>
+                        <input id="marrso-express-firstname" type="text" class="input-text"
+                               data-bind="value: firstname, attr: { disabled: isSaving }"/>
+                    </div>
+                    <div class="field required">
+                        <label class="label" for="marrso-express-lastname"><span data-bind="i18n: 'Last Name'"></span></label>
+                        <input id="marrso-express-lastname" type="text" class="input-text"
+                               data-bind="value: lastname, attr: { disabled: isSaving }"/>
+                    </div>
+                    <!-- ko if: expressConfig.isGuest -->
+                    <div class="field required marrso-express__field-full">
+                        <label class="label" for="marrso-express-email"><span data-bind="i18n: 'Email'"></span></label>
+                        <input id="marrso-express-email" type="email" class="input-text"
+                               data-bind="value: email, attr: { disabled: isSaving }"/>
+                    </div>
+                    <!-- /ko -->
+                    <div class="field required">
+                        <label class="label" for="marrso-express-telephone"><span data-bind="i18n: 'Phone'"></span></label>
+                        <input id="marrso-express-telephone" type="tel" class="input-text"
+                               data-bind="value: telephone, attr: { disabled: isSaving }"/>
+                    </div>
+                    <div class="field required marrso-express__field-full">
+                        <label class="label" for="marrso-express-street"><span data-bind="i18n: 'Street Address'"></span></label>
+                        <input id="marrso-express-street" type="text" class="input-text"
+                               data-bind="value: street, attr: { disabled: isSaving }"/>
+                    </div>
+                    <div class="field required">
+                        <label class="label" for="marrso-express-city"><span data-bind="i18n: 'City / District'"></span></label>
+                        <input id="marrso-express-city" type="text" class="input-text"
+                               data-bind="value: city, attr: { disabled: isSaving }"/>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="marrso-express-postcode"><span data-bind="i18n: 'Postcode'"></span></label>
+                        <input id="marrso-express-postcode" type="text" class="input-text"
+                               data-bind="value: postcode, attr: { disabled: isSaving }"/>
+                    </div>
+                </div>
+            </section>
+
+            <section class="marrso-express__section">
+                <!-- ko foreach: getRegion('delivery-scheduler') -->
+                <!-- ko template: getTemplate() --><!-- /ko -->
+                <!-- /ko -->
+            </section>
+
+            <!-- ko if: errorMessage -->
+            <div class="message message-error error">
+                <div data-bind="text: errorMessage"></div>
+            </div>
+            <!-- /ko -->
+
+            <div class="marrso-express__actions">
+                <button type="button" class="action primary marrso-express__continue"
+                        data-bind="click: continueToPayment, disable: isSaving">
+                    <span data-bind="visible: !isSaving(), i18n: 'Continue to payment'"></span>
+                    <span data-bind="visible: isSaving(), i18n: 'Saving...'"></span>
+                </button>
+            </div>
+        </div>
+
+        <aside class="marrso-express__summary">
+            <h2 class="marrso-express__summary-title" data-bind="i18n: 'Order summary'"></h2>
+            <ul class="marrso-express__items" data-bind="foreach: expressConfig.items">
+                <li class="marrso-express__item">
+                    <span class="marrso-express__item-name" data-bind="text: name"></span>
+                    <span class="marrso-express__item-meta">
+                        <span data-bind="text: qty"></span> ×
+                        <span data-bind="text: $parent.formatPrice(row_total / qty)"></span>
+                    </span>
+                </li>
+            </ul>
+            <div class="marrso-express__totals">
+                <div class="marrso-express__total-row">
+                    <span data-bind="i18n: 'Subtotal'"></span>
+                    <span data-bind="text: formatPrice(expressConfig.totals.subtotal)"></span>
+                </div>
+                <div class="marrso-express__total-row">
+                    <span data-bind="i18n: 'Shipping'"></span>
+                    <span data-bind="text: formatPrice(expressConfig.totals.shipping)"></span>
+                </div>
+                <div class="marrso-express__total-row marrso-express__total-row--grand">
+                    <span data-bind="i18n: 'Total'"></span>
+                    <span data-bind="text: formatPrice(expressConfig.totals.grand_total)"></span>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>

@@ -1,8 +1,19 @@
-# MARRSO DeliveryScheduler
+# MARRSO Extension Suite for Magento 2
 
-**Enterprise-Grade Delivery Scheduling System for Magento 2**
+**Enterprise delivery scheduling and shared MARRSO admin platform**
 
-An advanced module implementing professional delivery scheduling with support for pickup points and home delivery, similar to checkout flows found in e-commerce platforms like Falabella.
+This repository contains the MARRSO Magento 2 extension suite:
+
+| Module | Package | Purpose |
+|--------|---------|---------|
+| **MARRSO_Base** | `marrso/module-base` | Brand menu, logo, extension registry, shared admin UI |
+| **MARRSO_DeliveryScheduler** | `marrso/module-delivery-scheduler` | Pickup points, home delivery, express checkout |
+
+`MARRSO_DeliveryScheduler` **requires** `MARRSO_Base`.
+
+An advanced delivery scheduling system with support for pickup points and home delivery, similar to checkout flows found in e-commerce platforms like Falabella.
+
+> See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## Features
 
@@ -39,22 +50,72 @@ An advanced module implementing professional delivery scheduling with support fo
 - Delivery instructions capture
 
 #### Admin Management
-- CRUD interfaces for all entities
-- Automatic slot generation via cron
-- Configuration management
-- Holiday management
-- Bulk operations
-- Grid filtering and searching
+- Amasty-style **MARRSO** sidebar menu (via `MARRSO_Base`)
+- Extension dashboard with stats, quick access and config shortcuts
+- CRUD interfaces for pickup locations, pickup slots, delivery slots and holidays
+- Automatic slot generation via cron (respects manual slot control per location)
+- Configuration management under **Settings & Configuration**
+- Bulk operations, grid filtering and searching
+
+#### Express & Checkout UX
+- Four delivery modalities: pickup, express 180 min, express 24 h, scheduled delivery
+- Express one-page checkout (`/delivery/checkout/express`)
+- Interactive pickup map (Leaflet)
+- Price labels: free pickup only; paid delivery shows slot or configured fallback prices
 
 ## Architecture
 
-The module follows Magento 2 enterprise patterns:
+The suite follows Magento 2 enterprise patterns with a **vendor base module** (Amasty-style) and feature modules:
+
+```
+app/code/MARRSO/
+├── Base/                              # MARRSO_Base — shared platform
+│   ├── etc/adminhtml/menu.xml         # Brand menu (MARRSO root + groups)
+│   ├── Model/ExtensionPool.php        # Extension registry (event-driven)
+│   ├── Controller/Adminhtml/Dashboard/
+│   ├── Block/Adminhtml/Dashboard.php
+│   └── view/adminhtml/                # Logo, CSS, brand dashboard
+│
+└── DeliveryScheduler/                 # MARRSO_DeliveryScheduler — delivery product
+    ├── Api/                           # Service contracts & data interfaces
+    ├── Model/                         # Domain models, repositories, services
+    ├── Observer/RegisterBaseExtension.php  # Registers in ExtensionPool
+    ├── etc/adminhtml/menu.xml         # Items under MARRSO_Base groups
+    └── view/                          # Checkout UI + extension admin dashboard
+```
+
+### Extension registration (for new MARRSO modules)
+
+Listen to `marrso_base_collect_extensions` and append your extension metadata:
+
+```php
+// etc/events.xml
+<event name="marrso_base_collect_extensions">
+    <observer name="my_module_register" instance="Vendor\Module\Observer\RegisterBaseExtension"/>
+</event>
+
+// Observer
+$extensions[] = [
+    'title' => __('My Extension'),
+    'description' => __('Short description'),
+    'sort_order' => 20,
+    'dashboard_path' => 'my_module/dashboard/index',
+    'config_path' => 'adminhtml/system_config/edit',
+    'config_params' => ['section' => 'my_module'],
+    'acl_resource' => 'Vendor_Module::menu',
+];
+$transport->setExtensions($extensions);
+```
+
+Hang menu items from `MARRSO_Base::extensions`, `MARRSO_Base::marrso` or `MARRSO_Base::settings` in your module's `menu.xml`.
+
+### DeliveryScheduler internals
 
 ```
 app/code/MARRSO/DeliveryScheduler/
 ├── Api/                          # Service Contracts & Data Interfaces
 ├── Block/                         # View blocks
-├── Controller/                    # Admin controllers
+├── Controller/                    # Admin & frontend controllers
 ├── Cron/                         # Scheduled tasks
 ├── etc/                          # Configuration files
 ├── Model/                        # Domain models
@@ -66,8 +127,8 @@ app/code/MARRSO/DeliveryScheduler/
 ├── Plugin/                       # Plugins/interceptors
 ├── Ui/                          # UI Components
 └── view/                        # Frontend assets
-    ├── frontend/                # Storefront
-    └── adminhtml/               # Admin panel
+    ├── frontend/                # Storefront & express checkout
+    └── adminhtml/               # Extension dashboard & CRUD grids
 ```
 
 ### Key Components
@@ -132,33 +193,35 @@ public function execute(
 
 ### Steps
 
-1. **Copy Module**
+1. **Copy modules**
    ```bash
-   cp -r DeliveryScheduler app/code/MARRSO/
+   mkdir -p app/code/MARRSO
+   cp -r Base DeliveryScheduler app/code/MARRSO/
+   # Or copy the full app/code/MARRSO/ tree from this repository
    ```
 
-2. **Install Magento Module**
+2. **Enable modules**
    ```bash
-   bin/magento module:enable MARRSO_DeliveryScheduler
+   bin/magento module:enable MARRSO_Base MARRSO_DeliveryScheduler
    bin/magento setup:upgrade
    bin/magento setup:di:compile
-   bin/magento setup:static-content:deploy
+   bin/magento setup:static-content:deploy -f es_ES en_US
+   bin/magento setup:static-content:deploy -f es_ES en_US --area adminhtml
    ```
 
-3. **Enable Module**
+3. **Enable Delivery Scheduler**
    ```
-   Admin → Stores → Configuration → MARRSO → Delivery Scheduler → General → Enable
+   Admin → MARRSO → Settings & Configuration → Delivery Scheduler → General → Enable
    ```
+   Or: `Stores → Configuration → MARRSO → Delivery Scheduler → General → Enable`
 
-4. **Configure Module**
-   - Set cutoff hours
-   - Configure capacities
-   - Set generation days ahead
-   - Configure SLA and holidays
+4. **Configure module**
+   - Set cutoff hours, capacities and generation days ahead
+   - Configure express prices and SLA / holidays
 
-5. **Setup Cron**
+5. **Setup cron**
    - Ensure Magento cron is running
-   - Slots generate automatically every day at midnight
+   - Slots generate automatically (daily + express refresh jobs)
 
 ## Configuration
 
@@ -388,6 +451,22 @@ var config = {
 
 ## Admin Interface
 
+### MARRSO menu (MARRSO_Base)
+
+Sidebar entry **MARRSO** opens a flyout with grouped columns:
+
+| Column | Contents |
+|--------|----------|
+| **Extensions** | Installed MARRSO extensions (e.g. Delivery Scheduler → panel) |
+| **Delivery Scheduler** | Panel, Pickup Locations, Pickup Slots, Delivery Slots, Holidays |
+| **Settings & Configuration** | Delivery Scheduler system config shortcut |
+
+Brand dashboard: **MARRSO → Dashboard** (lists registered extensions).
+
+### Delivery Scheduler panel
+
+Extension-specific dashboard with live counts, quick-access cards and configuration shortcuts.
+
 ### Pickup Locations Management
 - Create/Edit/Delete locations
 - Set coordinates for distance calculation
@@ -417,9 +496,12 @@ var config = {
 
 ### Generate Slots (Daily 00:00)
 - Automatically creates pickup and delivery slots
-- Respects configuration settings
-- Avoids duplicates
-- Honors holidays and weekends
+- Respects configuration settings and `auto_generate_slots` per location
+- Avoids duplicates; honors holidays and weekends
+
+### Generate Express Slots
+- Creates / refreshes express 180 min and 24 h slots by district
+- Hourly refresh for express 180 windows
 
 ### Cleanup Expired (Daily 01:00)
 - Removes past slots
@@ -520,6 +602,7 @@ MARRSO - Enterprise Magento Development
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: May 2026
-**Compatibility**: Magento 2.4.6+, PHP 8.1+
+**Version**: 1.1.0  
+**Last Updated**: May 2026  
+**Compatibility**: Magento 2.4.6+, PHP 8.1+  
+**Changelog**: [CHANGELOG.md](CHANGELOG.md)

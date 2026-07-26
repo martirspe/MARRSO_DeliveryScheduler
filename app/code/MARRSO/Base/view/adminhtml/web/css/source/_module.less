@@ -1,0 +1,67 @@
+//
+// MARRSO — company logo in admin sidebar (Amasty-style brand menu)
+// Class from menu id MARRSO_Base::marrso → item-marrso-base-marrso
+//
+
+@_marrso-menu-logo__size: 2.2rem;
+
+.admin__menu {
+    .level-0.item-marrso-base-marrso,
+    .level-0[class*='item-marrso-base-marrso'] {
+        > a {
+            &:before {
+                content: '' !important;
+                display: block !important;
+                font-family: inherit !important;
+                font-size: 0 !important;
+                line-height: 0 !important;
+                speak: never;
+                width: @_marrso-menu-logo__size !important;
+                height: @_marrso-menu-logo__size !important;
+                min-width: @_marrso-menu-logo__size !important;
+                min-height: @_marrso-menu-logo__size !important;
+                margin: 0 auto .3rem !important;
+                padding: 0 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                background-color: transparent !important;
+                background-image: url('../../images/logo.svg') !important;
+                background-repeat: no-repeat !important;
+                background-position: center center !important;
+                background-size: contain !important;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+
+        &._active,
+        &._show,
+        &:hover {
+            > a:before {
+                background-image: url('../../images/logo-active.svg') !important;
+            }
+        }
+
+        .submenu {
+            a:before {
+                content: none !important;
+                display: none !important;
+                background: none !important;
+                background-image: none !important;
+                width: 0 !important;
+                height: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 0 !important;
+            }
+        }
+    }
+
+    &._collapsed {
+        .level-0.item-marrso-base-marrso,
+        .level-0[class*='item-marrso-base-marrso'] {
+            > a:before {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
+}

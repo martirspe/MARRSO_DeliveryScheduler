@@ -5,6 +5,12 @@
         <job name="marrso_delivery_scheduler_generate_slots" instance="MARRSO\DeliveryScheduler\Cron\GenerateSlots" method="execute">
             <schedule>0 0 * * *</schedule>
         </job>
+        <job name="marrso_delivery_scheduler_generate_express" instance="MARRSO\DeliveryScheduler\Cron\GenerateExpressSlots" method="execute">
+            <schedule>5 0 * * *</schedule>
+        </job>
+        <job name="marrso_delivery_scheduler_refresh_express_180" instance="MARRSO\DeliveryScheduler\Cron\GenerateExpressSlots" method="executeHourly">
+            <schedule>0 */2 * * *</schedule>
+        </job>
         <job name="marrso_delivery_scheduler_cleanup_expired" instance="MARRSO\DeliveryScheduler\Cron\CleanupExpiredSlots" method="execute">
             <schedule>0 1 * * *</schedule>
         </job>

@@ -19,6 +19,7 @@ interface OrderDeliveryScheduleInterface extends ExtensibleDataInterface
     const PICKUP_LOCATION_ID = 'pickup_location_id';
     const DELIVERY_DATE = 'delivery_date';
     const DELIVERY_SLOT = 'delivery_slot';
+    const SERVICE_LEVEL = 'service_level';
     const CUSTOMER_COMMENT = 'customer_comment';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
@@ -130,6 +131,21 @@ interface OrderDeliveryScheduleInterface extends ExtensibleDataInterface
      * @return $this
      */
     public function setDeliverySlot(?string $deliverySlot): self;
+
+    /**
+     * Get Service Level
+     *
+     * @return string|null
+     */
+    public function getServiceLevel(): ?string;
+
+    /**
+     * Set Service Level
+     *
+     * @param string|null $serviceLevel
+     * @return $this
+     */
+    public function setServiceLevel(?string $serviceLevel): self;
 
     /**
      * Get Customer Comment

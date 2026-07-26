@@ -4,9 +4,10 @@
     <default>
         <marrso_delivery_scheduler>
             <general>
-                <enable>0</enable>
+                <enable>1</enable>
                 <enable_pickup>1</enable_pickup>
                 <enable_delivery>1</enable_delivery>
+                <enable_express_checkout>1</enable_express_checkout>
                 <default_timezone>America/Lima</default_timezone>
             </general>
             <pickup>
@@ -14,12 +15,20 @@
                 <preparation_days>1</preparation_days>
                 <default_capacity>10</default_capacity>
                 <disable_weekends>0</disable_weekends>
+                <enable_map>1</enable_map>
+                <map_default_lat>-12.0464</map_default_lat>
+                <map_default_lng>-77.0428</map_default_lng>
+                <map_default_zoom>12</map_default_zoom>
             </pickup>
             <delivery>
                 <cutoff_hour>17</cutoff_hour>
                 <enable_same_day>0</enable_same_day>
+                <enable_express_180>1</enable_express_180>
+                <enable_express_24>1</enable_express_24>
                 <same_day_cutoff>14</same_day_cutoff>
                 <default_delivery_price>9.90</default_delivery_price>
+                <express_180_price>19.90</express_180_price>
+                <express_24_price>14.90</express_24_price>
                 <default_capacity>20</default_capacity>
                 <disable_weekends>0</disable_weekends>
             </delivery>
@@ -30,8 +39,8 @@
                 <end_time>21:00</end_time>
             </slot_generation>
             <advanced>
-                <enable_logging>1</enable_logging>
-                <cache_lifetime>3600</cache_lifetime>
+                <enable_logging>0</enable_logging>
+                <cache_lifetime>900</cache_lifetime>
                 <max_distance_km>0</max_distance_km>
             </advanced>
         </marrso_delivery_scheduler>

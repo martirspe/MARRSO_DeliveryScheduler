@@ -58,26 +58,31 @@
         </massaction>
     </listingToolbar>
     <columns name="marrso_holiday_columns">
-        <column name="entity_id">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>
-                <label translate="true">ID</label>
+                <label translate="true">Identification Number (ID)</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
-        <column name="holiday_date">
+        <column name="holiday_date" sortOrder="20">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Date</label>
             </settings>
         </column>
-        <column name="description">
+        <column name="description" sortOrder="30">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Description</label>
             </settings>
         </column>
-        <actionsColumn name="actions" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\HolidayActions">
+        <actionsColumn name="actions" sortOrder="100" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\HolidayActions">
             <settings>
                 <indexField>entity_id</indexField>
                 <resizeEnabled>false</resizeEnabled>

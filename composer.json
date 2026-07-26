@@ -1,11 +1,12 @@
 {
   "name": "marrso/module-delivery-scheduler",
   "description": "Enterprise Delivery Scheduling System for Magento 2 - Pickup Points and Home Delivery",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "magento2-module",
   "license": "OSL-3.0",
   "require": {
     "php": "^8.1 || ^8.2 || ^8.3",
+    "marrso/module-base": "*",
     "magento/framework": ">=103.0.6",
     "magento/module-sales": "*",
     "magento/module-quote": "*",
@@ -15,9 +16,11 @@
   },
   "autoload": {
     "files": [
+      "app/code/MARRSO/Base/registration.php",
       "app/code/MARRSO/DeliveryScheduler/registration.php"
     ],
     "psr-4": {
+      "MARRSO\\Base\\": "app/code/MARRSO/Base/",
       "MARRSO\\DeliveryScheduler\\": "app/code/MARRSO/DeliveryScheduler/"
     }
   }

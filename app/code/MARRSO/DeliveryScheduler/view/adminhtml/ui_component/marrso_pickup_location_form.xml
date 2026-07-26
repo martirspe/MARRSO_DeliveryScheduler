@@ -11,6 +11,7 @@
     </argument>
     <settings>
         <namespace>marrso_pickup_location_form</namespace>
+        <dataScope>data</dataScope>
         <deps>
             <dep>marrso_pickup_location_form.marrso_pickup_location_form_data_source</dep>
         </deps>
@@ -38,7 +39,6 @@
     <fieldset name="general">
         <settings>
             <label translate="true">General Information</label>
-            <dataScope/>
         </settings>
         <field name="entity_id" formElement="input">
             <settings>
@@ -68,6 +68,9 @@
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">Address</label>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
             </settings>
         </field>
         <field name="district" formElement="input">
@@ -75,6 +78,56 @@
                 <dataType>text</dataType>
                 <label translate="true">District</label>
             </settings>
+        </field>
+        <field name="brand" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Brand</label>
+                <notice translate="true">e.g. Falabella, Sodimac, Mallplaza</notice>
+            </settings>
+        </field>
+        <field name="location_references" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Pickup References</label>
+                <notice translate="true">Directions to find the pickup desk inside the location.</notice>
+            </settings>
+        </field>
+        <field name="opening_hours" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Opening Hours</label>
+                <notice translate="true">e.g. Mon-Sun 11:00-19:00</notice>
+            </settings>
+        </field>
+        <field name="retention_days" formElement="input">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Retention Days</label>
+                <notice translate="true">Days the order is held before cancellation.</notice>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                    <rule name="validate-greater-than-zero" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="auto_generate_slots" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Auto-generate Slots (Cron)</label>
+                <notice translate="true">When disabled, only manually created pickup slots are used. Saving a slot in Pickup Slots also disables this.</notice>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
         </field>
         <field name="latitude" formElement="input">
             <settings>

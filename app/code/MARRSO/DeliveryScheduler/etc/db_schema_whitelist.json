@@ -1,9 +1,127 @@
 {
-    "marrso_pickup_location": true,
-    "marrso_pickup_slot": true,
-    "marrso_delivery_slot": true,
-    "marrso_delivery_holiday": true,
-    "marrso_order_delivery_schedule": true,
-    "quote_address": true,
-    "sales_order_address": true
+    "marrso_pickup_location": {
+        "column": {
+            "entity_id": true,
+            "name": true,
+            "code": true,
+            "address": true,
+            "district": true,
+            "latitude": true,
+            "longitude": true,
+            "priority": true,
+            "auto_generate_slots": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "IDX_DISTRICT": true,
+            "IDX_IS_ACTIVE": true,
+            "IDX_PRIORITY": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UNQ_CODE": true
+        }
+    },
+    "marrso_pickup_slot": {
+        "column": {
+            "entity_id": true,
+            "pickup_location_id": true,
+            "slot_date": true,
+            "start_time": true,
+            "end_time": true,
+            "capacity": true,
+            "used_capacity": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "IDX_LOCATION_DATE": true,
+            "IDX_IS_ACTIVE": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "FK_PICKUP_LOCATION": true
+        }
+    },
+    "marrso_delivery_slot": {
+        "column": {
+            "entity_id": true,
+            "district": true,
+            "slot_date": true,
+            "start_time": true,
+            "end_time": true,
+            "price": true,
+            "capacity": true,
+            "used_capacity": true,
+            "carrier_code": true,
+            "is_active": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "IDX_DISTRICT_DATE": true,
+            "IDX_DISTRICT_DATE_LEVEL": true,
+            "IDX_IS_ACTIVE": true,
+            "IDX_CARRIER": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "marrso_delivery_holiday": {
+        "column": {
+            "entity_id": true,
+            "holiday_date": true,
+            "description": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UNQ_HOLIDAY_DATE": true
+        }
+    },
+    "marrso_order_delivery_schedule": {
+        "column": {
+            "entity_id": true,
+            "order_id": true,
+            "quote_id": true,
+            "delivery_type": true,
+            "pickup_location_id": true,
+            "delivery_date": true,
+            "delivery_slot": true,
+            "customer_comment": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "index": {
+            "IDX_QUOTE_ID": true,
+            "IDX_DELIVERY_TYPE": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "UNQ_MARRSO_ORDER_DELIVERY_SCHEDULE_ORDER_ID": true
+        }
+    },
+    "quote_address": {
+        "column": {
+            "marrso_delivery_type": true,
+            "marrso_pickup_location_id": true,
+            "marrso_delivery_date": true,
+            "marrso_delivery_slot": true,
+            "marrso_delivery_instructions": true
+        }
+    },
+    "sales_order_address": {
+        "column": {
+            "marrso_delivery_type": true,
+            "marrso_pickup_location_id": true,
+            "marrso_delivery_date": true,
+            "marrso_delivery_slot": true,
+            "marrso_delivery_instructions": true
+        }
+    }
 }

@@ -1,0 +1,43 @@
+<?php
+/** @var \MARRSO\Base\Block\Adminhtml\Dashboard $block */
+?>
+<div class="marrso-dashboard">
+    <div class="marrso-dashboard__hero">
+        <div class="marrso-dashboard__hero-text">
+            <h1 class="marrso-dashboard__title"><?= $block->escapeHtml(__('MARRSO')) ?></h1>
+            <p class="marrso-dashboard__subtitle">
+                <?= $block->escapeHtml(__('Magento extensions by MARRSO. Select an extension below to open its panel.')) ?>
+            </p>
+        </div>
+    </div>
+
+    <h2 class="marrso-dashboard__section-title"><?= $block->escapeHtml(__('Extensions')) ?></h2>
+
+    <?php $extensions = $block->getExtensions(); ?>
+    <?php if ($extensions === []): ?>
+        <p class="marrso-dashboard__hint">
+            <?= $block->escapeHtml(__('No MARRSO extensions are available for your admin role.')) ?>
+        </p>
+    <?php else: ?>
+        <div class="marrso-dashboard__cards">
+            <?php foreach ($extensions as $extension): ?>
+                <div class="marrso-card marrso-card--extension">
+                    <h3 class="marrso-card__title"><?= $block->escapeHtml($extension['title']) ?></h3>
+                    <p class="marrso-card__text"><?= $block->escapeHtml($extension['description']) ?></p>
+                    <div class="marrso-card__actions">
+                        <a class="action-default marrso-card__button"
+                           href="<?= $block->escapeUrl($extension['dashboard_url']) ?>">
+                            <?= $block->escapeHtml(__('Open panel')) ?>
+                        </a>
+                        <?php if ($extension['config_url']): ?>
+                            <a class="action-secondary marrso-card__button"
+                               href="<?= $block->escapeUrl($extension['config_url']) ?>">
+                                <?= $block->escapeHtml(__('Configuration')) ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+</div>

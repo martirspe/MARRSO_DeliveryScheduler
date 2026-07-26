@@ -28,6 +28,11 @@
                 <field>marrso_delivery_instructions</field>
             </join>
         </attribute>
+        <attribute code="service_level" type="string">
+            <join reference_table="quote_address" reference_field="address_id" join_on_field="address_id">
+                <field>marrso_service_level</field>
+            </join>
+        </attribute>
     </extension_attributes>
 
     <extension_attributes for="Magento\Sales\Api\Data\OrderAddressInterface">
@@ -54,6 +59,11 @@
         <attribute code="delivery_instructions" type="string">
             <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
                 <field>marrso_delivery_instructions</field>
+            </join>
+        </attribute>
+        <attribute code="service_level" type="string">
+            <join reference_table="sales_order_address" reference_field="entity_id" join_on_field="entity_id">
+                <field>marrso_service_level</field>
             </join>
         </attribute>
     </extension_attributes>

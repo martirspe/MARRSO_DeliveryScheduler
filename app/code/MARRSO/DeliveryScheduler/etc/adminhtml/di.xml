@@ -9,6 +9,13 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="MarrsoPickupSlotGridCollection" type="MARRSO\DeliveryScheduler\Model\ResourceModel\PickupSlot\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">marrso_pickup_slot</argument>
+            <argument name="resourceModel" xsi:type="string">MARRSO\DeliveryScheduler\Model\ResourceModel\PickupSlot</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MarrsoDeliverySlotGridCollection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">marrso_delivery_slot</argument>
@@ -27,6 +34,7 @@
         <arguments>
             <argument name="collections" xsi:type="array">
                 <item name="marrso_pickup_location_listing_data_source" xsi:type="string">MarrsoPickupLocationGridCollection</item>
+                <item name="marrso_pickup_slot_listing_data_source" xsi:type="string">MarrsoPickupSlotGridCollection</item>
                 <item name="marrso_delivery_slot_listing_data_source" xsi:type="string">MarrsoDeliverySlotGridCollection</item>
                 <item name="marrso_holiday_listing_data_source" xsi:type="string">MarrsoHolidayGridCollection</item>
             </argument>

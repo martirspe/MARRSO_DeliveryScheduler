@@ -118,6 +118,17 @@ class OrderDeliverySchedule extends AbstractModel implements OrderDeliverySchedu
         return $this->setData(self::DELIVERY_SLOT, $deliverySlot);
     }
 
+    public function getServiceLevel(): ?string
+    {
+        $value = $this->getData(self::SERVICE_LEVEL);
+        return $value !== null && $value !== '' ? (string)$value : null;
+    }
+
+    public function setServiceLevel(?string $serviceLevel): self
+    {
+        return $this->setData(self::SERVICE_LEVEL, $serviceLevel);
+    }
+
     public function getCustomerComment(): ?string
     {
         return $this->getData(self::CUSTOMER_COMMENT);

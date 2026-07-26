@@ -105,6 +105,21 @@ class DeliverySlot extends AbstractModel implements DeliverySlotInterface, Ident
         return $this->setData(self::PRICE, $price);
     }
 
+    public function getServiceLevel(): string
+    {
+        return \MARRSO\DeliveryScheduler\Model\ServiceLevel::normalize(
+            $this->getData(self::SERVICE_LEVEL)
+        );
+    }
+
+    public function setServiceLevel(string $serviceLevel): self
+    {
+        return $this->setData(
+            self::SERVICE_LEVEL,
+            \MARRSO\DeliveryScheduler\Model\ServiceLevel::normalize($serviceLevel)
+        );
+    }
+
     public function getCapacity(): int
     {
         return (int)$this->getData(self::CAPACITY);

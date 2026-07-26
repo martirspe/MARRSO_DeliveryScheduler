@@ -17,6 +17,7 @@ class AssignDeliverySchedulerAcl implements DataPatchInterface
     private const ADMIN_ROLE_ID = 1;
 
     private const RESOURCES = [
+        'MARRSO_Base::menu',
         'MARRSO_DeliveryScheduler::menu',
         'MARRSO_DeliveryScheduler::config',
         'MARRSO_DeliveryScheduler::pickup_locations',

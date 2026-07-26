@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd"
+         name="marrso_pickup_slot_listing">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">marrso_pickup_slot_listing.marrso_pickup_slot_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="*/*/edit"/>
+                <class>primary</class>
+                <label translate="true">Add New Pickup Slot</label>
+                <aclResource>MARRSO_DeliveryScheduler::pickup_slots_create</aclResource>
+            </button>
+        </buttons>
+        <spinner>marrso_pickup_slot_columns</spinner>
+        <deps>
+            <dep>marrso_pickup_slot_listing.marrso_pickup_slot_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="marrso_pickup_slot_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>MARRSO_DeliveryScheduler::pickup_slots_view</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="marrso_pickup_slot_listing_data_source">
+            <settings>
+                <requestFieldName>entity_id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <url path="marrso_delivery_scheduler/pickupslot/massDelete"/>
+                    <type>delete</type>
+                    <label translate="true">Delete</label>
+                    <confirm>
+                        <message translate="true">Are you sure you want to delete selected pickup slots?</message>
+                    </confirm>
+                </settings>
+            </action>
+        </massaction>
+    </listingToolbar>
+    <columns name="marrso_pickup_slot_columns">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Identification Number (ID)</label>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="location_name" sortOrder="20">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Pickup Location</label>
+            </settings>
+        </column>
+        <column name="location_code" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Location Code</label>
+            </settings>
+        </column>
+        <column name="slot_date" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Date</label>
+            </settings>
+        </column>
+        <column name="start_time" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Start</label>
+            </settings>
+        </column>
+        <column name="end_time" sortOrder="60">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">End</label>
+            </settings>
+        </column>
+        <column name="used_capacity" sortOrder="70">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Used</label>
+            </settings>
+        </column>
+        <column name="capacity" sortOrder="80">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Capacity</label>
+            </settings>
+        </column>
+        <column name="is_active" sortOrder="90" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Active</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" sortOrder="100" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\PickupSlotActions">
+            <settings>
+                <indexField>entity_id</indexField>
+                <resizeEnabled>false</resizeEnabled>
+                <resizeDefaultWidth>107</resizeDefaultWidth>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

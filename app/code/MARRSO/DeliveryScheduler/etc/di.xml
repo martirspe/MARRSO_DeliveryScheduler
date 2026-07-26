@@ -80,4 +80,32 @@
         </arguments>
     </type>
 
+    <type name="Magento\Quote\Model\Quote\Address\ToOrderAddress">
+        <plugin name="marrso_copy_delivery_attributes_to_order"
+                type="MARRSO\DeliveryScheduler\Plugin\Quote\CopyDeliveryAttributesToOrder"/>
+    </type>
+
+    <type name="Magento\Checkout\Model\ShippingInformationManagement">
+        <plugin name="marrso_save_delivery_attributes_on_shipping_information"
+                type="MARRSO\DeliveryScheduler\Plugin\Checkout\SaveDeliveryAttributesOnShippingInformation"/>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\Repository\DeliverySlotRepository">
+        <plugin name="marrso_invalidate_availability_cache"
+                type="MARRSO\DeliveryScheduler\Plugin\Repository\InvalidateAvailabilityCachePlugin"/>
+    </type>
+
+    <type name="MARRSO\DeliveryScheduler\Model\Repository\PickupSlotRepository">
+        <plugin name="marrso_invalidate_availability_cache"
+                type="MARRSO\DeliveryScheduler\Plugin\Repository\InvalidateAvailabilityCachePlugin"/>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="marrso_delivery_seed_demo" xsi:type="object">MARRSO\DeliveryScheduler\Console\Command\SeedDemoDataCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>

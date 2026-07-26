@@ -59,38 +59,63 @@
         </massaction>
     </listingToolbar>
     <columns name="marrso_pickup_location_columns">
-        <column name="entity_id">
+        <selectionsColumn name="ids" sortOrder="0">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="10">
             <settings>
                 <filter>textRange</filter>
-                <label translate="true">ID</label>
+                <label translate="true">Identification Number (ID)</label>
                 <sorting>desc</sorting>
             </settings>
         </column>
-        <column name="name">
+        <column name="name" sortOrder="20">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Name</label>
             </settings>
         </column>
-        <column name="code">
+        <column name="code" sortOrder="30">
             <settings>
                 <filter>text</filter>
                 <label translate="true">Code</label>
             </settings>
         </column>
-        <column name="district">
+        <column name="district" sortOrder="40">
             <settings>
                 <filter>text</filter>
                 <label translate="true">District</label>
             </settings>
         </column>
-        <column name="priority">
+        <column name="brand" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Brand</label>
+            </settings>
+        </column>
+        <column name="opening_hours" sortOrder="60">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Opening Hours</label>
+            </settings>
+        </column>
+        <column name="priority" sortOrder="70">
             <settings>
                 <filter>textRange</filter>
                 <label translate="true">Priority</label>
             </settings>
         </column>
-        <column name="is_active" component="Magento_Ui/js/grid/columns/select">
+        <column name="auto_generate_slots" sortOrder="80" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Auto Slots</label>
+            </settings>
+        </column>
+        <column name="is_active" sortOrder="90" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
                 <filter>select</filter>
@@ -98,7 +123,7 @@
                 <label translate="true">Active</label>
             </settings>
         </column>
-        <actionsColumn name="actions" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\PickupLocationActions">
+        <actionsColumn name="actions" sortOrder="100" class="MARRSO\DeliveryScheduler\Ui\Component\Listing\Column\PickupLocationActions">
             <settings>
                 <indexField>entity_id</indexField>
                 <resizeEnabled>false</resizeEnabled>

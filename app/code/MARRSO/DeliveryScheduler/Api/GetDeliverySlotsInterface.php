@@ -13,14 +13,15 @@ interface GetDeliverySlotsInterface
     /**
      * Get Available Delivery Slots
      *
-     * @param string $district Delivery district
+     * @param string|null $district Delivery district
      * @param string|null $startDate Start date to fetch (Y-m-d format)
      * @param string|null $endDate End date to fetch (Y-m-d format)
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function execute(
-        string $district,
+        ?string $district = null,
         ?string $startDate = null,
-        ?string $endDate = null
+        ?string $endDate = null,
+        ?string $serviceLevel = null
     ): array;
 }

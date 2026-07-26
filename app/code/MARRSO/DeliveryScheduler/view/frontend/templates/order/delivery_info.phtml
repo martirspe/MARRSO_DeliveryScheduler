@@ -1,0 +1,50 @@
+<?php
+/**
+ * @var \MARRSO\DeliveryScheduler\Block\Sales\Order\DeliveryInfo $block
+ */
+?>
+<?php if ($block->isEnabled() && $block->hasDeliverySelection()): ?>
+    <div class="box box-order-delivery-scheduler">
+        <strong class="box-title"><span><?= $block->escapeHtml(__('Delivery Schedule')) ?></span></strong>
+        <div class="box-content">
+            <?php if ($block->getDeliveryType() === 'pickup'): ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Type')) ?>:</strong>
+                    <?= $block->escapeHtml(__('Pickup')) ?>
+                </p>
+                <?php if ($block->getPickupLocationName()): ?>
+                    <p>
+                        <strong><?= $block->escapeHtml(__('Pickup Location')) ?>:</strong>
+                        <?= $block->escapeHtml($block->getPickupLocationName()) ?>
+                    </p>
+                <?php endif; ?>
+            <?php else: ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Type')) ?>:</strong>
+                    <?= $block->escapeHtml($block->getServiceLevelLabel() ?: __('Home Delivery')) ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($block->getDeliveryDate()): ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Date')) ?>:</strong>
+                    <?= $block->escapeHtml($block->getDeliveryDate()) ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($block->getDeliverySlot()): ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Time Slot')) ?>:</strong>
+                    <?= $block->escapeHtml($block->getDeliverySlot()) ?>
+                </p>
+            <?php endif; ?>
+
+            <?php if ($block->getDeliveryInstructions()): ?>
+                <p>
+                    <strong><?= $block->escapeHtml(__('Instructions')) ?>:</strong>
+                    <?= $block->escapeHtml($block->getDeliveryInstructions()) ?>
+                </p>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>

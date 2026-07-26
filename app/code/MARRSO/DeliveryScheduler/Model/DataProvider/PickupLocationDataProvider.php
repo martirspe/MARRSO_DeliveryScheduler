@@ -55,7 +55,9 @@ class PickupLocationDataProvider extends AbstractDataProvider
         if (empty($this->loadedData)) {
             $this->loadedData[''] = [
                 'is_active' => 1,
+                'auto_generate_slots' => 1,
                 'priority' => 0,
+                'retention_days' => 5,
             ];
         }
 
@@ -70,6 +72,9 @@ class PickupLocationDataProvider extends AbstractDataProvider
     {
         if (isset($data['is_active'])) {
             $data['is_active'] = (int)$data['is_active'];
+        }
+        if (isset($data['auto_generate_slots'])) {
+            $data['auto_generate_slots'] = (int)$data['auto_generate_slots'];
         }
 
         return $data;

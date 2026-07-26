@@ -48,6 +48,9 @@ class DeliveryAttributesPersistor
         $extensionAttributes->setDeliveryDate($selection->getDeliveryDate());
         $extensionAttributes->setDeliverySlot($selection->getDeliverySlot());
         $extensionAttributes->setDeliveryInstructions($selection->getCustomerComment());
+        if (method_exists($extensionAttributes, 'setServiceLevel')) {
+            $extensionAttributes->setServiceLevel($selection->getServiceLevel());
+        }
 
         $address->setExtensionAttributes($extensionAttributes);
 
@@ -55,6 +58,7 @@ class DeliveryAttributesPersistor
         $address->setData('marrso_pickup_location_id', $selection->getPickupLocationId());
         $address->setData('marrso_delivery_date', $selection->getDeliveryDate());
         $address->setData('marrso_delivery_slot', $selection->getDeliverySlot());
+        $address->setData('marrso_service_level', $selection->getServiceLevel());
         $address->setData('marrso_delivery_instructions', $selection->getCustomerComment());
     }
 }

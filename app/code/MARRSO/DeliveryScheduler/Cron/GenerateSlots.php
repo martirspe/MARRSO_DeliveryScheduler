@@ -12,6 +12,7 @@ use MARRSO\DeliveryScheduler\Api\DeliverySlotRepositoryInterface;
 use MARRSO\DeliveryScheduler\Api\PickupLocationRepositoryInterface;
 use MARRSO\DeliveryScheduler\Api\PickupSlotRepositoryInterface;
 use MARRSO\DeliveryScheduler\Model\Config\ConfigProvider;
+use MARRSO\DeliveryScheduler\Model\Service\DistrictResolver;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 
 /**
@@ -61,6 +62,11 @@ class GenerateSlots
      */
     private $searchCriteriaBuilder;
 
+    /**
+     * @var DistrictResolver
+     */
+    private $districtResolver;
+
     public function __construct(
         PickupLocationRepositoryInterface $pickupLocationRepository,
         PickupSlotRepositoryInterface $pickupSlotRepository,
@@ -69,7 +75,8 @@ class GenerateSlots
         LoggerInterface $logger,
         PickupSlotInterfaceFactory $pickupSlotFactory,
         DeliverySlotInterfaceFactory $deliverySlotFactory,
-        SearchCriteriaBuilder $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        DistrictResolver $districtResolver
     ) {
         $this->pickupLocationRepository = $pickupLocationRepository;
         $this->pickupSlotRepository = $pickupSlotRepository;
@@ -79,6 +86,7 @@ class GenerateSlots
         $this->pickupSlotFactory = $pickupSlotFactory;
         $this->deliverySlotFactory = $deliverySlotFactory;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->districtResolver = $districtResolver;
     }
 
     /**
@@ -91,7 +99,9 @@ class GenerateSlots
                 return;
             }
 
-            $this->logger->info('Starting delivery scheduler slot generation');
+            if ($this->configProvider->isLoggingEnabled()) {
+                $this->logger->info('Starting delivery scheduler slot generation');
+            }
 
             $daysAhead = $this->configProvider->getSlotGenerationDaysAhead();
             $timezone = new DateTimeZone($this->configProvider->getDefaultTimezone());
@@ -106,7 +116,9 @@ class GenerateSlots
                 $this->generateDeliverySlots($daysAhead, $timezone);
             }
 
-            $this->logger->info('Completed delivery scheduler slot generation');
+            if ($this->configProvider->isLoggingEnabled()) {
+                $this->logger->info('Completed delivery scheduler slot generation');
+            }
         } catch (\Exception $e) {
             $this->logger->error('Error in slot generation cron: ' . $e->getMessage());
         }
@@ -141,6 +153,10 @@ class GenerateSlots
             $generated = 0;
 
             foreach ($locations as $location) {
+                if (!$location->getAutoGenerateSlots()) {
+                    continue;
+                }
+
                 $currentDate = clone $startDate;
 
                 while ($currentDate <= $endDate) {
@@ -240,31 +256,7 @@ class GenerateSlots
      */
     private function getDeliveryGenerationDistricts(): array
     {
-        $districts = [];
-
-        $pickupSearchCriteria = $this->createSearchCriteriaBuilder()
-            ->addFilter('is_active', 1)
-            ->create();
-        $pickupLocations = $this->pickupLocationRepository->getList($pickupSearchCriteria)->getItems();
-
-        foreach ($pickupLocations as $location) {
-            $district = trim((string)$location->getDistrict());
-            if ($district !== '' && !isset($districts[$district])) {
-                $districts[$district] = true;
-            }
-        }
-
-        $deliverySearchCriteria = $this->createSearchCriteriaBuilder()->create();
-        $deliverySlots = $this->deliverySlotRepository->getList($deliverySearchCriteria)->getItems();
-
-        foreach ($deliverySlots as $slot) {
-            $district = trim((string)$slot->getDistrict());
-            if ($district !== '' && !isset($districts[$district])) {
-                $districts[$district] = true;
-            }
-        }
-
-        return array_keys($districts);
+        return $this->districtResolver->getActiveDistricts();
     }
 
     /**
@@ -329,6 +321,7 @@ class GenerateSlots
                 $slot->setStartTime($start->format('H:i:s'));
                 $slot->setEndTime($slotEnd->format('H:i:s'));
                 $slot->setPrice($price);
+                $slot->setServiceLevel(\MARRSO\DeliveryScheduler\Model\ServiceLevel::SCHEDULED);
                 $slot->setCapacity($capacity);
                 $slot->setUsedCapacity(0);
                 $slot->setCarrierCode(null);

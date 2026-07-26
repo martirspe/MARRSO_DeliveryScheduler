@@ -1,16 +1,20 @@
-# MARRSO DeliveryScheduler - Installation & Configuration Guide
+# MARRSO Extension Suite — Installation & Configuration Guide
+
+Modules: **MARRSO_Base** + **MARRSO_DeliveryScheduler**
+
+> Release notes: [CHANGELOG.md](CHANGELOG.md)
 
 ## Quick Start
 
 ### 1. Installation
 
 ```bash
-# Copy the module to app/code
+# Copy both modules to app/code
 mkdir -p app/code/MARRSO
-cp -r DeliveryScheduler app/code/MARRSO/
+cp -r Base DeliveryScheduler app/code/MARRSO/
 
-# Enable the module
-php bin/magento module:enable MARRSO_DeliveryScheduler
+# Enable both modules (Base is required)
+php bin/magento module:enable MARRSO_Base MARRSO_DeliveryScheduler
 
 # Run setup upgrade
 php bin/magento setup:upgrade
@@ -18,16 +22,26 @@ php bin/magento setup:upgrade
 # Compile DI
 php bin/magento setup:di:compile
 
-# Deploy static content
-php bin/magento setup:static-content:deploy -f
+# Deploy static content (storefront + admin)
+php bin/magento setup:static-content:deploy -f es_ES en_US
+php bin/magento setup:static-content:deploy -f es_ES en_US --area adminhtml
 
 # Clear cache
 php bin/magento cache:clean
 ```
 
+**Verify modules:**
+```bash
+php bin/magento module:status MARRSO_Base MARRSO_DeliveryScheduler
+```
+
 ### 2. Basic Configuration
 
-Navigate to: **Stores → Configuration → MARRSO → Delivery Scheduler**
+**Option A — MARRSO menu (recommended):**
+`Admin → MARRSO → Settings & Configuration → Delivery Scheduler`
+
+**Option B — System config:**
+`Stores → Configuration → MARRSO → Delivery Scheduler`
 
 #### Enable the Module
 1. Go to **General Settings**
@@ -67,7 +81,9 @@ Navigate to: **Stores → Configuration → MARRSO → Delivery Scheduler**
 
 ### 3. Add Pickup Locations
 
-Navigate to: **MARRSO → Pickup Locations**
+Navigate to: **MARRSO → Delivery Scheduler → Pickup Locations**
+
+Or: **MARRSO → Extensions → Delivery Scheduler** (extension panel) → quick access cards.
 
 #### Create New Location
 1. Click **Add Pickup Location**
@@ -91,7 +107,7 @@ Miraflores: -12.117606, -77.028908
 
 ### 4. Add Delivery Slots
 
-Navigate to: **MARRSO → Delivery Slots**
+Navigate to: **MARRSO → Delivery Scheduler → Delivery Slots**
 
 #### Create New Slot
 1. Click **Add Delivery Slot**
@@ -115,7 +131,7 @@ Navigate to: **MARRSO → Delivery Slots**
 
 ### 5. Add Holidays
 
-Navigate to: **MARRSO → Holidays**
+Navigate to: **MARRSO → Delivery Scheduler → Holidays**
 
 #### Create New Holiday
 1. Click **Add Holiday**
@@ -141,7 +157,9 @@ php bin/magento cron:run
 php bin/magento cron:run --group default
 ```
 
-Check generated slots in **MARRSO → Pickup Slots** (auto-generated from locations).
+Check generated slots in **MARRSO → Delivery Scheduler → Pickup Slots**.
+
+Locations with **Auto Generate Slots = No** are managed manually and skipped by cron.
 
 ## Testing
 
@@ -233,12 +251,18 @@ php bin/magento cache:clean
 ### Issue: Delivery Scheduler Not Showing in Checkout
 
 **Solution**:
-1. Verify module is enabled: `php bin/magento module:status | grep MARRSO`
-2. Check if enabled in config: **Stores → Configuration → MARRSO → General → Enable**
-3. Recompile: `php bin/magento setup:di:compile`
-4. Deploy static: `php bin/magento setup:static-content:deploy -f`
-5. Clear cache: `php bin/magento cache:clean`
-6. Hard refresh browser (Ctrl+Shift+R)
+1. Verify both modules enabled: `php bin/magento module:status | grep MARRSO`
+2. Check config: **MARRSO → Settings & Configuration → Delivery Scheduler → General → Enable**
+3. Recompile and deploy static (see step 1)
+4. Hard refresh browser (Ctrl+Shift+R)
+
+### Issue: MARRSO Menu Not Visible
+
+**Solution**:
+1. Ensure `MARRSO_Base` is enabled and `setup:upgrade` was run
+2. Check admin role permissions: **System → Permissions → User Roles → MARRSO** and **Delivery Scheduler**
+3. Deploy admin static: `bin/magento setup:static-content:deploy -f es_ES en_US --area adminhtml`
+4. Clear cache and hard refresh
 
 ### Issue: No Slots Appearing
 
@@ -246,7 +270,7 @@ php bin/magento cache:clean
 1. Verify cron is running: `grep marrso var/log/system.log`
 2. Check logs: `tail -f var/log/marrso_delivery_scheduler.log`
 3. Manually generate: `php bin/magento cron:run --group default`
-4. Verify locations exist: **MARRSO → Pickup Locations**
+4. Verify locations exist: **MARRSO → Delivery Scheduler → Pickup Locations**
 5. Verify configuration: Check **Slot Generation** settings
 6. Check holidays: Make sure date isn't a holiday
 
@@ -317,5 +341,6 @@ For issues or questions:
 
 ---
 
-**Last Updated**: May 2026
-**Version**: 1.0.0
+**Last Updated**: May 2026  
+**Version**: 1.1.0  
+**Changelog**: [CHANGELOG.md](CHANGELOG.md)

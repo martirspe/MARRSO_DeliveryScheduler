@@ -7,29 +7,36 @@ use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-/**
- * Pickup Location New/Edit Controller
- */
 class Edit extends Action
 {
-    const ADMIN_RESOURCE = 'MARRSO_DeliveryScheduler::pickup_locations_update';
+    public const ADMIN_RESOURCE = 'MARRSO_DeliveryScheduler::pickup_locations_update';
 
-    /**
-     * @var PageFactory
-     */
-    protected $resultPageFactory;
-
-    public function __construct(Context $context, PageFactory $resultPageFactory)
-    {
+    public function __construct(
+        Context $context,
+        private readonly PageFactory $resultPageFactory
+    ) {
         parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
     }
 
     public function execute()
     {
+        $id = (int)$this->getRequest()->getParam('entity_id');
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__('Edit Pickup Location'));
+        $resultPage->setActiveMenu('MARRSO_DeliveryScheduler::pickup_locations');
+        $resultPage->getConfig()->getTitle()->prepend(
+            $id ? __('Edit Pickup Location') : __('New Pickup Location')
+        );
 
         return $resultPage;
+    }
+
+    protected function _isAllowed(): bool
+    {
+        $id = (int)$this->getRequest()->getParam('entity_id');
+        $resource = $id
+            ? 'MARRSO_DeliveryScheduler::pickup_locations_update'
+            : 'MARRSO_DeliveryScheduler::pickup_locations_create';
+
+        return $this->_authorization->isAllowed($resource);
     }
 }

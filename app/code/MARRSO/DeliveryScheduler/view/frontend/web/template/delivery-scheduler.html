@@ -1,372 +1,252 @@
-<div id="marrso-delivery-scheduler" class="marrso-delivery-scheduler">
-    <!-- Loading indicator -->
-    <div class="loading-indicator" data-bind="visible: isLoading()">
-        <p>Loading...</p>
+<div class="marrso-delivery-scheduler" data-bind="visible: isVisible">
+    <div class="marrso-delivery-scheduler__header">
+        <h3 class="marrso-delivery-scheduler__title" data-bind="i18n: 'How do you want to receive your order?'"></h3>
     </div>
 
-    <!-- Error message -->
-    <div class="error-message" data-bind="visible: errorMessage(), text: errorMessage()" style="display: none;"></div>
+    <div class="marrso-delivery-scheduler__loader" data-bind="visible: isLoading">
+        <span class="marrso-delivery-scheduler__loader-dot"></span>
+        <span data-bind="i18n: 'Loading delivery options...'"></span>
+    </div>
 
-    <!-- Tabs -->
-    <div class="delivery-tabs">
-        <!-- Pickup Tab -->
-        <div class="tab-section" data-bind="css: {active: activeTab() === 'pickup'}">
-            <input type="radio" id="tab-pickup" name="delivery-type" value="pickup" 
-                   data-bind="checked: activeTab, click: function() { switchTab('pickup'); }" />
-            <label for="tab-pickup" class="tab-label">
-                <span class="tab-icon">📍</span>
-                Pickup Point
-            </label>
+    <div class="message message-error error" data-bind="visible: errorMessage, text: errorMessage"></div>
 
-            <div class="tab-content" data-bind="visible: activeTab() === 'pickup'">
-                <!-- Pickup Locations List -->
-                <div class="pickup-locations-list" data-bind="foreach: pickupLocations()">
-                    <div class="location-card">
-                        <input type="radio" name="pickup-location" 
-                               data-bind="checked: $parent.selectedPickupLocation() && $parent.selectedPickupLocation().entity_id === entity_id, value: entity_id, click: $parent.selectPickupLocation" />
-                        <div class="location-info">
-                            <h4 class="location-name" data-bind="text: name"></h4>
-                            <p class="location-address" data-bind="text: address"></p>
-                            
-                            <!-- Distance if available -->
-                            <p class="location-distance" data-bind="visible: distance_km">
-                                <span data-bind="text: distance_km"></span> km away
-                            </p>
+    <!-- Method cards -->
+    <div class="marrso-method-cards">
+        <!-- ko if: moduleConfig.enablePickup !== false -->
+        <button type="button"
+                class="marrso-method-card"
+                data-bind="css: { 'is-selected': activeMethod() === 'pickup' }, click: function() { switchMethod('pickup'); }">
+            <span class="marrso-method-card__icon" aria-hidden="true">📍</span>
+            <span class="marrso-method-card__body">
+                <span class="marrso-method-card__label" data-bind="i18n: 'Pickup point'"></span>
+                <span class="marrso-method-card__hint" data-bind="i18n: 'Click & Collect'"></span>
+                <span class="marrso-method-card__badge marrso-method-card__badge--free" data-bind="i18n: 'FREE'"></span>
+            </span>
+        </button>
+        <!-- /ko -->
 
-                            <!-- Available slots -->
-                            <div class="location-slots" data-bind="if: slots && slots.length > 0">
-                                <p class="slots-label">Available dates:</p>
-                                <div class="slot-options" data-bind="foreach: slots">
-                                    <span class="slot-badge" data-bind="text: date"></span>
-                                </div>
-                            </div>
+        <!-- ko if: isMethodEnabled('express_180') -->
+        <button type="button"
+                class="marrso-method-card"
+                data-bind="css: { 'is-selected': activeMethod() === 'express_180', 'is-disabled': !isMethodAvailable('express_180') }, click: function() { switchMethod('express_180'); }">
+            <span class="marrso-method-card__icon" aria-hidden="true">⚡</span>
+            <span class="marrso-method-card__body">
+                <span class="marrso-method-card__label" data-bind="i18n: '180 min delivery'"></span>
+                <span class="marrso-method-card__hint" data-bind="i18n: 'Receive in up to 3 hours'"></span>
+                <span class="marrso-method-card__badge" data-bind="text: getMethodPriceLabel('express_180')"></span>
+            </span>
+        </button>
+        <!-- /ko -->
 
-                            <!-- Cost -->
-                            <p class="location-cost">Free</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- ko if: isMethodEnabled('express_24') -->
+        <button type="button"
+                class="marrso-method-card"
+                data-bind="css: { 'is-selected': activeMethod() === 'express_24', 'is-disabled': !isMethodAvailable('express_24') }, click: function() { switchMethod('express_24'); }">
+            <span class="marrso-method-card__icon" aria-hidden="true">🚚</span>
+            <span class="marrso-method-card__body">
+                <span class="marrso-method-card__label" data-bind="i18n: '24 hour delivery'"></span>
+                <span class="marrso-method-card__hint" data-bind="i18n: 'Tomorrow or today'"></span>
+                <span class="marrso-method-card__badge" data-bind="text: getMethodPriceLabel('express_24')"></span>
+            </span>
+        </button>
+        <!-- /ko -->
 
-                <!-- No locations message -->
-                <div class="no-results" data-bind="visible: pickupLocations().length === 0 && !isLoading()">
-                    <p>No pickup points available</p>
-                </div>
+        <!-- ko if: moduleConfig.enableDelivery !== false -->
+        <button type="button"
+                class="marrso-method-card"
+                data-bind="css: { 'is-selected': activeMethod() === 'scheduled', 'is-disabled': !isMethodAvailable('scheduled') }, click: function() { switchMethod('scheduled'); }">
+            <span class="marrso-method-card__icon" aria-hidden="true">📅</span>
+            <span class="marrso-method-card__body">
+                <span class="marrso-method-card__label" data-bind="i18n: 'Scheduled delivery'"></span>
+                <span class="marrso-method-card__hint" data-bind="i18n: 'Choose date and time'"></span>
+                <span class="marrso-method-card__badge" data-bind="text: getMethodPriceLabel('scheduled')"></span>
+            </span>
+        </button>
+        <!-- /ko -->
+    </div>
+
+    <!-- Pickup panel -->
+    <div class="marrso-panel" data-bind="visible: activeMethod() === 'pickup' && moduleConfig.enablePickup !== false">
+        <div class="marrso-panel__toolbar marrso-panel__toolbar--actions">
+            <input type="search"
+                   class="marrso-search"
+                   data-bind="value: pickupSearchQuery, attr: {placeholder: $t('Search by district, mall or address...')}"
+                   autocomplete="off"/>
+            <div class="marrso-panel__buttons">
+                <!-- ko if: moduleConfig.enablePickupMap !== false -->
+                <button type="button"
+                        class="marrso-btn marrso-btn--secondary"
+                        data-bind="click: requestGeolocation.bind($data, true), attr: {title: $t('Use my location')}">
+                    <span data-bind="i18n: 'Near me'"></span>
+                </button>
+                <button type="button"
+                        class="marrso-btn marrso-btn--secondary"
+                        data-bind="click: togglePickupMapView, css: {'is-active': showPickupMap()}, visible: hasMappableLocations() && !showPickupMap()">
+                    <span data-bind="i18n: 'View map'"></span>
+                </button>
+                <button type="button"
+                        class="marrso-btn marrso-btn--secondary"
+                        data-bind="click: togglePickupMapView, visible: hasMappableLocations() && showPickupMap()">
+                    <span data-bind="i18n: 'Hide map'"></span>
+                </button>
+                <!-- /ko -->
+                <button type="button"
+                        class="marrso-btn marrso-btn--secondary"
+                        data-bind="click: toggleSortByNearest, css: {'is-active': sortByNearest()}">
+                    <span data-bind="i18n: 'Nearest first'"></span>
+                </button>
             </div>
         </div>
 
-        <!-- Delivery Tab -->
-        <div class="tab-section" data-bind="css: {active: activeTab() === 'delivery'}">
-            <input type="radio" id="tab-delivery" name="delivery-type" value="delivery" 
-                   data-bind="checked: activeTab, click: function() { switchTab('delivery'); }" />
-            <label for="tab-delivery" class="tab-label">
-                <span class="tab-icon">🚚</span>
-                Home Delivery
-            </label>
+        <p class="marrso-panel__hint" data-bind="visible: geolocationMessage, text: geolocationMessage"></p>
 
-            <div class="tab-content" data-bind="visible: activeTab() === 'delivery'">
-                <!-- Delivery Slots List -->
-                <div class="delivery-slots-list" data-bind="foreach: deliverySlots()">
-                    <div class="slot-card">
-                        <input type="radio" name="delivery-slot" 
-                               data-bind="checked: $parent.selectedDeliverySlot() && $parent.selectedDeliverySlot().start_time === start_time && $parent.selectedDeliverySlot().end_time === end_time && $parent.selectedDeliverySlot().date === date, click: $parent.selectDeliverySlot" />
-                        <div class="slot-info">
-                            <h4 class="slot-date" data-bind="text: date"></h4>
-                            <p class="slot-time">
-                                <span data-bind="text: $parent.formatTime(start_time)"></span> - 
-                                <span data-bind="text: $parent.formatTime(end_time)"></span>
-                            </p>
-                            <p class="slot-availability">
-                                <span data-bind="text: available_spots"></span> 
-                                <span data-bind="text: available_spots === 1 ? 'spot' : 'spots'"></span> available
-                            </p>
-                            <p class="slot-price" data-bind="visible: price > 0">
-                                Cost: $<span data-bind="text: price"></span>
-                            </p>
-                            <p class="slot-price-free" data-bind="visible: price === 0">
-                                Free shipping
-                            </p>
-                        </div>
+        <!-- ko if: moduleConfig.enablePickupMap !== false && showPickupMap() && hasMappableLocations() -->
+        <div class="marrso-pickup-map" data-bind="afterRender: onMapContainerRendered"></div>
+        <!-- /ko -->
+
+        <div class="marrso-location-list" data-bind="visible: !showPickupMap(), foreach: filteredPickupLocations">
+            <article class="marrso-location-card"
+                     data-bind="css: { 'is-selected': $parent.isPickupLocationSelected($data) }, click: function() { $parent.selectPickupLocation($data); }">
+                <div class="marrso-location-card__main">
+                    <div class="marrso-location-card__top">
+                        <!-- ko if: $data.brand -->
+                        <span class="marrso-location-card__brand" data-bind="text: $data.brand"></span>
+                        <!-- /ko -->
+                        <!-- ko if: $data.badge -->
+                        <span class="marrso-location-card__badge" data-bind="text: $data.badge"></span>
+                        <!-- /ko -->
+                    </div>
+                    <h4 class="marrso-location-card__name" data-bind="text: name"></h4>
+                    <p class="marrso-location-card__address" data-bind="text: address"></p>
+                    <!-- ko if: $data.location_references -->
+                    <p class="marrso-location-card__references">
+                        <span data-bind="i18n: 'Reference:'"></span>
+                        <span data-bind="text: $data.location_references"></span>
+                    </p>
+                    <!-- /ko -->
+                    <div class="marrso-location-card__meta">
+                        <!-- ko if: $data.distance_km != null && $data.distance_km !== '' -->
+                        <span class="marrso-location-card__distance">
+                            <span data-bind="text: $parent.formatDistance($data.distance_km)"></span>
+                            <span data-bind="i18n: 'km away'"></span>
+                        </span>
+                        <!-- /ko -->
+                        <!-- ko if: $data.opening_hours -->
+                        <span class="marrso-location-card__hours" data-bind="text: $data.opening_hours"></span>
+                        <!-- /ko -->
+                        <!-- ko if: $data.retention_days -->
+                        <span class="marrso-location-card__retention">
+                            <span data-bind="i18n: 'Hold up to'"></span>
+                            <span data-bind="text: $data.retention_days"></span>
+                            <span data-bind="i18n: 'days'"></span>
+                        </span>
+                        <!-- /ko -->
                     </div>
                 </div>
+                <span class="marrso-location-card__price marrso-location-card__price--free" data-bind="i18n: 'FREE'"></span>
+            </article>
+        </div>
 
-                <!-- No slots message -->
-                <div class="no-results" data-bind="visible: deliverySlots().length === 0 && !isLoading()">
-                    <p>No delivery slots available for your area</p>
-                </div>
+        <div class="marrso-no-results" data-bind="visible: filteredPickupLocations().length === 0 && !isLoading() && !showPickupMap()">
+            <span data-bind="i18n: 'No pickup points available'"></span>
+        </div>
+
+        <!-- ko if: selectedPickupLocation() && pickupDateGroups().length -->
+        <div class="marrso-slot-picker">
+            <p class="marrso-slot-picker__label" data-bind="i18n: 'Select pickup date'"></p>
+            <div class="marrso-date-row" data-bind="foreach: pickupDateGroups">
+                <button type="button"
+                        class="marrso-date-chip"
+                        data-bind="css: { 'is-selected': $parent.isPickupDateSelected(date) }, click: function() { $parent.selectPickupDate(date); }">
+                    <span data-bind="text: label"></span>
+                </button>
+            </div>
+
+            <p class="marrso-slot-picker__label" data-bind="i18n: 'Select time slot'"></p>
+            <div class="marrso-time-row" data-bind="foreach: pickupSlotsForSelectedDate">
+                <button type="button"
+                        class="marrso-time-chip"
+                        data-bind="css: { 'is-selected': $parent.isPickupSlotSelected($data) }, click: function(data, event) { event.stopPropagation(); $parent.selectPickupSlot($data); }">
+                    <span class="marrso-time-chip__time"
+                          data-bind="text: $parent.formatTime(start_time) + ' - ' + $parent.formatTime(end_time)"></span>
+                    <!-- ko if: available_spots -->
+                    <span class="marrso-time-chip__spots">
+                        <span data-bind="text: available_spots"></span>
+                        <span data-bind="i18n: 'spots'"></span>
+                    </span>
+                    <!-- /ko -->
+                </button>
             </div>
         </div>
+        <!-- /ko -->
+
+        <!-- ko if: selectedPickupLocation() && !pickupDateGroups().length -->
+        <p class="marrso-no-results" data-bind="i18n: 'No pickup times available for this location yet.'"></p>
+        <!-- /ko -->
     </div>
 
-    <!-- Delivery Instructions -->
-    <div class="delivery-instructions-section" data-bind="visible: selectedPickupLocation() || selectedDeliverySlot()">
-        <label for="delivery-instructions">Delivery Instructions (Optional)</label>
-        <textarea id="delivery-instructions" class="form-control" 
-                  data-bind="value: deliveryInstructions, valueUpdate: 'afterkeydown', event: { change: saveComment, blur: saveComment }" 
-                  placeholder="Add any special delivery instructions..."></textarea>
+    <!-- Delivery panel -->
+    <div class="marrso-panel" data-bind="visible: isDeliveryMethod() && moduleConfig.enableDelivery !== false">
+        <!-- ko if: !customerDistrict() -->
+        <p class="marrso-panel__hint" data-bind="i18n: 'Enter your city in the shipping address to see delivery slots.'"></p>
+        <!-- /ko -->
+
+        <!-- ko if: customerDistrict() && deliveryDateGroups().length -->
+        <div class="marrso-slot-picker">
+            <p class="marrso-slot-picker__label" data-bind="i18n: 'Select delivery date'"></p>
+            <div class="marrso-date-row" data-bind="foreach: deliveryDateGroups">
+                <button type="button"
+                        class="marrso-date-chip"
+                        data-bind="css: { 'is-selected': $parent.isDeliveryDateSelected(date) }, click: function() { $parent.selectDeliveryDate(date); }">
+                    <span data-bind="text: label"></span>
+                </button>
+            </div>
+
+            <p class="marrso-slot-picker__label" data-bind="i18n: 'Select time slot'"></p>
+            <div class="marrso-time-row" data-bind="foreach: deliverySlotsForSelectedDate">
+                <button type="button"
+                        class="marrso-time-chip"
+                        data-bind="css: { 'is-selected': $parent.isDeliverySlotSelected($data) }, click: function() { $parent.selectDeliverySlot($data); }">
+                    <span class="marrso-time-chip__time"
+                          data-bind="text: $parent.formatTime(start_time) + ' - ' + $parent.formatTime(end_time)"></span>
+                    <span class="marrso-time-chip__price" data-bind="text: $parent.formatSlotPrice($data)"></span>
+                    <!-- ko if: available_spots -->
+                    <span class="marrso-time-chip__spots">
+                        <span data-bind="text: available_spots"></span>
+                        <span data-bind="i18n: 'spots'"></span>
+                    </span>
+                    <!-- /ko -->
+                </button>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <div class="marrso-no-results" data-bind="visible: customerDistrict() && deliveryDateGroups().length === 0 && !isLoading()">
+            <span data-bind="i18n: 'No delivery slots available for your area'"></span>
+        </div>
     </div>
 
-    <!-- Selected Summary -->
-    <div class="delivery-summary" data-bind="visible: isValid()">
-        <h4>Your Selection</h4>
-        <!-- Pickup Summary -->
-        <div data-bind="if: selectedPickupLocation()">
-            <p>
-                <strong>Pickup Location:</strong> 
-                <span data-bind="text: selectedPickupLocation().name"></span>
-            </p>
-            <p>
-                <strong>Address:</strong> 
-                <span data-bind="text: selectedPickupLocation().address"></span>
-            </p>
-        </div>
-        <!-- Delivery Summary -->
-        <div data-bind="if: selectedDeliverySlot()">
-            <p>
-                <strong>Delivery Date:</strong> 
-                <span data-bind="text: selectedDeliverySlot().date"></span>
-            </p>
-            <p>
-                <strong>Time Slot:</strong> 
-                <span data-bind="text: formatTime(selectedDeliverySlot().start_time)"></span> - 
-                <span data-bind="text: formatTime(selectedDeliverySlot().end_time)"></span>
-            </p>
-        </div>
+    <!-- Instructions -->
+    <div class="marrso-instructions" data-bind="visible: isValid()">
+        <label for="marrso-delivery-instructions">
+            <span data-bind="i18n: 'Delivery instructions (optional)'"></span>
+        </label>
+        <textarea id="marrso-delivery-instructions"
+                  class="input-text marrso-instructions__input"
+                  rows="2"
+                  data-bind="value: deliveryInstructions, attr: {placeholder: $t('e.g. Leave with reception, call on arrival...')}, event: { change: saveComment, blur: saveComment }"></textarea>
     </div>
+
+    <!-- Sticky summary -->
+    <aside class="marrso-summary" data-bind="visible: isValid()">
+        <div class="marrso-summary__icon" aria-hidden="true">✓</div>
+        <div class="marrso-summary__content">
+            <p class="marrso-summary__title" data-bind="i18n: 'Your delivery'"></p>
+            <p class="marrso-summary__method" data-bind="text: getActiveMethodLabel()"></p>
+            <p class="marrso-summary__text" data-bind="text: summaryText"></p>
+            <!-- ko if: selectedPickupLocation() -->
+            <p class="marrso-summary__detail" data-bind="text: selectedPickupLocation().location_references"></p>
+            <!-- /ko -->
+        </div>
+    </aside>
 </div>
-
-<style>
-.marrso-delivery-scheduler {
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.delivery-tabs {
-    margin-bottom: 20px;
-}
-
-.tab-section {
-    margin-bottom: 20px;
-}
-
-.tab-label {
-    display: inline-block;
-    padding: 10px 20px;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px 4px 0 0;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.tab-section input[type="radio"] {
-    display: none;
-}
-
-.tab-section.active .tab-label {
-    background: #fff;
-    border-bottom: 1px solid #fff;
-}
-
-.tab-content {
-    border: 1px solid #ddd;
-    padding: 20px;
-    display: none;
-}
-
-.tab-section.active .tab-content {
-    display: block;
-}
-
-.pickup-locations-list,
-.delivery-slots-list {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.location-card,
-.slot-card {
-    display: flex;
-    align-items: flex-start;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.location-card:hover,
-.slot-card:hover {
-    border-color: #007bff;
-    background: #f8f9fa;
-}
-
-.location-card input[type="radio"],
-.slot-card input[type="radio"] {
-    display: none;
-}
-
-.location-card,
-.slot-card {
-    position: relative;
-    padding-left: 40px;
-}
-
-.location-card::before,
-.slot-card::before {
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 18px;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #ddd;
-    border-radius: 50%;
-    transition: all 0.3s ease;
-}
-
-.location-card input[type="radio"]:checked + .location-info::before,
-.slot-card input[type="radio"]:checked + .slot-info::before {
-    background: #007bff;
-    border-color: #007bff;
-}
-
-.location-info,
-.slot-info {
-    flex: 1;
-}
-
-.location-name,
-.slot-date {
-    margin: 0 0 8px 0;
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.location-address,
-.slot-time {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-}
-
-.location-distance {
-    margin: 8px 0 0 0;
-    color: #007bff;
-    font-size: 14px;
-}
-
-.slot-availability {
-    margin: 8px 0;
-    color: #28a745;
-    font-size: 14px;
-}
-
-.slot-price {
-    margin: 8px 0 0 0;
-    font-weight: bold;
-    color: #ff6b6b;
-}
-
-.slot-price-free {
-    margin: 8px 0 0 0;
-    font-weight: bold;
-    color: #28a745;
-}
-
-.location-cost {
-    margin: 8px 0 0 0;
-    font-weight: bold;
-    color: #28a745;
-}
-
-.location-slots {
-    margin-top: 10px;
-}
-
-.slots-label {
-    margin: 0 0 8px 0;
-    font-size: 12px;
-    font-weight: bold;
-    color: #666;
-}
-
-.slot-options {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.slot-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #e9ecef;
-    border-radius: 3px;
-    font-size: 12px;
-    color: #666;
-}
-
-.no-results {
-    text-align: center;
-    padding: 20px;
-    color: #999;
-}
-
-.loading-indicator {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-}
-
-.error-message {
-    padding: 15px;
-    background: #f8d7da;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
-    color: #721c24;
-    margin-bottom: 20px;
-}
-
-.delivery-instructions-section {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f9f9f9;
-    border-radius: 4px;
-}
-
-.delivery-instructions-section label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-.delivery-instructions-section textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-family: Arial, sans-serif;
-    resize: vertical;
-    min-height: 80px;
-}
-
-.delivery-summary {
-    margin-top: 20px;
-    padding: 15px;
-    background: #e7f3ff;
-    border-left: 4px solid #007bff;
-    border-radius: 4px;
-}
-
-.delivery-summary h4 {
-    margin-top: 0;
-    color: #007bff;
-}
-
-.delivery-summary p {
-    margin: 8px 0;
-    color: #333;
-}
-</style>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.cart.methods">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="marrso.express.checkout.link"
+                   template="MARRSO_DeliveryScheduler::cart/express_link.phtml"
+                   after="checkout.cart.methods.onepage.bottom">
+                <arguments>
+                    <argument name="express_link" xsi:type="object">MARRSO\DeliveryScheduler\ViewModel\ExpressCheckoutLink</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>
